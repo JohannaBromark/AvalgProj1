@@ -37,8 +37,11 @@ public:
         return value;
     }
 
-    bool operator<(Savings& other){
+    bool operator<(Savings& other) {      //Implements < comparator
         return value < other.getValue();
+    }
+    bool operator>(Savings& other) { //Implements > comparator
+        return value > other.getValue();
     }
 };
 
