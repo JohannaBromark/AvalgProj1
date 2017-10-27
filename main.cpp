@@ -1,5 +1,4 @@
-//Här kommenterar Johanna
-//Här kommenterar Johanna igen
+//14:02
 
 #include <iostream>
 #include <math.h>
@@ -14,14 +13,13 @@ class City {
             x = inX; y = inY; index = inIndex;
         }
 
-        float calcDistance (City& otherCity) {
-            return sqrt(pow( ( x - std::get<0>(otherCity.getXY()) ), 2 ) + pow( ( y - std::get<1>(otherCity.getXY()) ), 2 ));
-        };
-
         std::tuple<float, float> getXY(){
             return std::make_tuple(x, y);
         };
 
+        float calcDistance (City& otherCity) {
+                return sqrt(pow( ( x - std::get<0>(otherCity.getXY()) ), 2 ) + pow( ( y - std::get<1>(otherCity.getXY()) ), 2 ));
+            };
 };
 
 int main() {
