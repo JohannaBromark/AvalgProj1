@@ -32,6 +32,14 @@ public:
     {
         value = cityBase.calcDistance(city1) + city2.calcDistance(cityBase) - city2.calcDistance(city1);
     }
+
+    float getValue (){
+        return value;
+    }
+
+    bool operator<(Savings& other){
+        return value < other.getValue();
+    }
 };
 
 int main() {
