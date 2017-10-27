@@ -9,7 +9,6 @@ float calcDistance(float x1, fl oat y1, float x2, float y2){
 }
 
 
-
 class city {
 public:
     float calcDistance(city);
