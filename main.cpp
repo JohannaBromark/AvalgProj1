@@ -11,15 +11,15 @@ float calcDistance(float x1, float y1, float x2, float y2){
 
 class City {
     public:
-        float calcDistance (City);
+        float calcDistance (City&);
 };
 
 
 float City::calcDistance (City& otherCity){
-
+    return 0.0;
 };
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello, World! :)" << std::endl;
     return 0;
 }
