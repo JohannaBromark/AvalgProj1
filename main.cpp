@@ -23,7 +23,7 @@ class City {
 
 float City::calcDistance (City& otherCity){
     std::tuple<float, float> otherXY = otherCity.getXY();
-    return sqrt(pow((x-x2), 2)+pow((y-y2), 2));
+    return sqrt(pow( ( x - otherXY.get(0) ), 2 )+pow( ( y - otherXY.get(1) ), 2 ));
 };
 
 
