@@ -4,7 +4,7 @@
 
 #ifndef AVALGPROJ1_LK_H
 #define AVALGPROJ1_LK_H
-#include "Node.h"
+#include "node.h";
 
 class Edge {
     public:
@@ -18,7 +18,8 @@ class Edge {
 
     private:
         float distance;
-        Node& to, from;
+        Node& to;
+        Node& from;
 };
 
 

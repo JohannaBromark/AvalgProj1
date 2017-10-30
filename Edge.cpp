@@ -3,8 +3,6 @@
 //
 
 #include "Edge.h"
-#include "Node.h"
-#include "Node.cpp"
 #include <iostream>
 
 Edge::Edge(Node& node1, Node& node2) : to(node1), from(node2) {
@@ -24,10 +22,8 @@ Node& Edge::getFromNode() {
 }
 
 bool Edge::operator==(Edge& other) {
-    if (to == other.getToNode() && from == other.getFromNode()) {
-        return true;
-    }
-    else if (to == other.getFromNode() && from == other.getToNode()) {
+    if ( (to == other.getToNode() && from == other.getFromNode())
+         || (to == other.getFromNode() && from == other.getToNode()) ) {
         return true;
     }
     else {
