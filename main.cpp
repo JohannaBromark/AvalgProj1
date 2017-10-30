@@ -3,6 +3,7 @@
 #include <iostream>
 #include <math.h>
 #include <tuple>
+#include "node.h"
 
 class City {
     float x, y;
