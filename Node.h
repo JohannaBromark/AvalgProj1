@@ -6,6 +6,8 @@
 #include <tuple>
 #include <math.h>
 
+//class Node;
+
 class Node { 
 
     public:
@@ -15,7 +17,8 @@ class Node {
     private:
         float x, y;
         int index;
-    
+        Node* neighbor1; 
+        Node* neighbor2;
 };
 
 #endif 

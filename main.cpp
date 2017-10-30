@@ -5,6 +5,8 @@
 #include <tuple>
 #include "Node.h"
 
+using namespace std;
+
 /*
 class Savings {
     float value;
@@ -30,9 +32,9 @@ public:
 };
 */
 int main() {
-    std::cout << "Hello, World! :)" << std::endl;
-    
-    Node stad(2.3, 4.3, 0);
+    cout << "Hello, World! :)" << endl;
+    Node stad1;
+    stad1 = new Node(2.3, 4.3, 0);
 
     return 0;
 }
