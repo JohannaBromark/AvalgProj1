@@ -33,7 +33,7 @@ public:
 */
 int main() {
     cout << "Hello, World! :)" << endl;
-    //Node stad1(2.3, 4.3, 0);
-
+    Node stad1(2.3, 4.3, 0);
+    cout << stad1.getIndex() << endl;
     return 0;
 }
