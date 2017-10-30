@@ -14,15 +14,15 @@
         return distance;
     }
 
-    Node& getToNode() {
+    Node& Edge::getToNode() {
         return to;
     }
 
-    Node& getFromNode() {
+    Node& Edge::getFromNode() {
         return from;
     }
 
-    bool operator=(Edge& other) {
+    bool operator==(Edge& other) {
         if (to == other.getToNode() && from == other.getFromNode()) {
             return true;
         }

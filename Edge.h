@@ -10,8 +10,9 @@ class Edge {
     public:
         Edge(Node& node1, Node& node2);
         float getDistance();
-        bool operator=();
-        Node& getToNode(), getFromNode();
+        bool operator==(Edge& other);
+        Node& getToNode();
+        Node& getFromNode();
     private:
         float distance;
         Node& to, from;

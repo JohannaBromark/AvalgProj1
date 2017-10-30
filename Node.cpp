@@ -13,3 +13,11 @@ using namespace std;
     float Node::calcDistance (Node& otherCity) {
         return sqrt(pow( ( x - std::get<0>(otherCity.getXY()) ), 2 ) + pow( ( y - std::get<1>(otherCity.getXY()) ), 2 ));
     };
+
+    int Node::getIndex() {
+        return index;
+    }
+
+    bool Node::operator== (Node& other) {
+        return index == other.getIndex();
+    }
