@@ -8,6 +8,7 @@
 class City {
     float x, y;
     int index;
+    City road1, road2;
 
     public:
         City (float xIn, float yIn, int indexIn) {
