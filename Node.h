@@ -13,17 +13,19 @@ class Node {
         std::tuple<float, float> getXY();
         bool operator==(Node& other);		
         int getIndex();
-        void addNeighbor(int i);
+        void addNeighbor(Node *newNeighbor);
         bool isConnectedToHub();
-        void connectToHub(int hubIndex);
-        int getNeighbourIndex(int neighborNum);
+        bool isOnlyConnectedToHub();
+        void connectToHub(Node *hubNode);
+        Node* getNeighbor(int neighborNum);
 
     private:
         float x, y;
         int index;
-        int neighbor1;
-        int neighbor2;
-        bool connectedHub;
+        Node *neighbor1;
+        Node *neighbor2;
+        bool oneCon2Hub;
+        bool twoCon2Hub;
 };
 
 #endif //_Node_h

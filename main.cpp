@@ -52,17 +52,18 @@ vector<tuple<float, Node&, Node&>> calcSavings(vector<Node>& cityVector){
 
 void connectNodes(Node& conNode1, Node& conNode2, int& counter){
     //Only connects two nodes if one of them is only connected to the hub. This prevents sub cycles. 
-    if (conNode1.isConnectedToHub() || conNode2.isConnectedToHub()){
-        conNode1.addNeighbor(conNode2.getIndex());
-        conNode2.addNeighbor(conNode1.getIndex());
+    if (conNode1.isOnlyConnectedToHub() || conNode2.isOnlyConnectedToHub()){
+        conNode1.addNeighbor(&conNode2);
+        conNode2.addNeighbor(&conNode1);
         counter--;
     }
 }
 
 void addNodesToHub(vector<Node>& citiesVector){
     //Works!!
+    Node &theHub = citiesVector[0];
     for (int n = 1; n<citiesVector.size(); n++){
-        citiesVector[n].connectToHub(0);
+        citiesVector[n].connectToHub(&theHub);
     }
 }
 
@@ -106,16 +107,19 @@ int main() {
     cout << stad2.getIndex() << endl;
 
     vector<Node> citiesTest = {stad1, stad2, stad3};
-/*
-    cout << "Detta borde vara -1 " << citiesTest[1].getNeighbourIndex(1) << endl;
+
+    if(!citiesTest[1].getNeighbor(1) == 0){
+        cout << "Detta borde vara -1 " << citiesTest[1].getNeighbor(1)->getIndex() << endl;
+    }
     
+    /*
     addNodesToHub(citiesTest);
-    cout << "Detta borde vara 0" << citiesTest[1].getNeighbourIndex(1) << endl;
+    cout << "Detta borde vara 0" << citiesTest[1].getNeighbor(1)->getIndex() << endl;
     clarkeWright(citiesTest);
-    cout << "Vad är detta nu? " << citiesTest[1].getNeighbourIndex(1) << endl;
-    cout << "Detta borde vara? " << citiesTest[1].getNeighbourIndex(2) << endl;
-    cout << "Vad är detta nu? " << citiesTest[2].getNeighbourIndex(1) << endl;
-    cout << "Detta borde vara? " << citiesTest[2].getNeighbourIndex(2) << endl;
+    cout << "Vad är detta nu? " << citiesTest[1].getNeighbor(1)->getIndex() << endl;
+    cout << "Detta borde vara? " << citiesTest[1].getNeighbor(2)->getIndex() << endl;
+    cout << "Vad är detta nu? " << citiesTest[2].getNeighbor(1)->getIndex() << endl;
+    cout << "Detta borde vara? " << citiesTest[2].getNeighbor(2)->getIndex() << endl;
     */
     
     std::vector<Node> cities2;

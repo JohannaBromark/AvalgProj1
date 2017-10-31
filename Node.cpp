@@ -3,9 +3,10 @@ using namespace std;
 
     Node::Node (float xIn, float yIn, int indexIn) {
         x = xIn; y = yIn; index = indexIn;
-        neighbor1 = -1;
-        neighbor2 = -1;
-        connectedHub = false;
+        twoCon2Hub = false;
+        oneCon2Hub = false;
+        neighbor1 = NULL;
+        neighbor2 = NULL;
     }
 
     tuple<float, float> Node::getXY() {
@@ -24,33 +25,38 @@ using namespace std;
         return index == other.getIndex();
     }
 
-    void Node::addNeighbor(int i){
-        if (neighbor1 == -1){
-            neighbor1 = i;
-            connectedHub = false;
+    void Node::addNeighbor(Node *newNeighbor){
+        if (neighbor1 == 0){
+            neighbor1 = newNeighbor;
+            twoCon2Hub = false;
         } 
         else {
-            neighbor2 = i;
+            neighbor2 = newNeighbor;
+            oneCon2Hub = false;
         }
     }
 
     bool Node::isConnectedToHub(){
-        //A node is connected to hub iff it has both connections to the hub. 
-        return connectedHub;
+        //A node is connected to hub iff it has at least one connection to the hub. 
+        return oneCon2Hub;
     }
 
-    void Node::connectToHub(int hubIndex){
-        neighbor1 = hubIndex;
-        neighbor2 = hubIndex;
-        connectedHub = true;    
+    bool Node::isOnlyConnectedToHub(){
+        return twoCon2Hub;
     }
 
-    int Node::getNeighbourIndex(int neighborNum){
+    void Node::connectToHub(Node *hubNode){
+        neighbor1 = hubNode;
+        neighbor2 = hubNode;
+        oneCon2Hub, twoCon2Hub = true;
+    }
+
+    Node* Node::getNeighbor(int neighborNum){
         if (neighborNum == 1){
             return neighbor1;
         }
         if (neighborNum == 2){
             return neighbor2;
         }
-        return -1; //In case of 
+        return 0; //In case of wrong index 
     }
