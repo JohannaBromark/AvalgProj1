@@ -96,6 +96,7 @@ int main() {
     vector<Node> citiesTest = {stad1, stad2, stad3};
     //stad1.addNeighbor(1);
 
+
     std::vector<Node> cities2;
 
 
@@ -105,4 +106,5 @@ int main() {
     cities2.emplace_back(Node(3.0, 3.0, 2));
     LinKernighan lin = LinKernighan(cities2);
 
+    return 0;
 }
