@@ -4,9 +4,8 @@
 
 #include "LinKernighan.h"
 
-LinKernighan::LinKernighan(std::vector<Node&> citiesIn) : cities(citiesIn){
-
-    generateInitial();
+LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
+    LinKernighan::generateInitial();
 
     int i = 0;
     int t = 0;
