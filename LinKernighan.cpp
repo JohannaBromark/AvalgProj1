@@ -8,6 +8,8 @@
 
 LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
     generateInitial();
+    G = 0;
+
     Edge e = setOfX.at(0);
     std::cout << e.getDistance() << " hej" << std::endl;
 
@@ -22,16 +24,21 @@ LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
 
     //Step 4
     while (nextT < cities.size()) {
-        if (x1.getDistance() - fromT.calcDistance(cities.at(nextT)) > 0) {
+        float g = x1.getDistance() - fromT.calcDistance(cities.at(nextT));
+        if (g > 0) {
             setOfX[1] = Edge(fromT, cities.at(nextT));
             setOfY.emplace_back(setOfX.at(1));
+            G += g;
             break;
         };
         nextT++;
     }
 
     while (true) { //Lägg in schysst brytning
+        //Step 5
+
         i ++;
+        //Step 6
         fromT = setOfX.at(i).getNode(0);
         int nextI = i;
         while (nextI < cities.size()) {
@@ -49,6 +56,10 @@ LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
                 }
             };
         }
+        //Implement going to step 2 if new tour better than before
+
+        //Step 7
+
         break;
     }
 }
