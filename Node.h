@@ -16,8 +16,8 @@ class Node {
     private:
         float x, y;
         int index;
-        Node* neighbor1; 
-        Node* neighbor2;
+        Node& neighbor1;
+        Node& neighbor2;
 };
 
 #endif //_Node_h
