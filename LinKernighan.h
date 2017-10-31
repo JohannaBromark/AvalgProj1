@@ -9,20 +9,20 @@
 class Node;
 #include <vector>
 
-
-
 class LinKernighan {
 public:
-    LinKernighan(std::vector<Node&> cities);
+    LinKernighan(std::vector<Node>& cities);
+
 private:
     float G;
-    std::vector<Node&> cities;
+    std::vector<Node>& cities;
     std::vector<Edge> setOfX;
     std::vector<Edge> setOfY;
 
-    bool checkIfTour(std::vector<Edge>& tour);
-    void generateInitial();
-};
+    bool checkIfTour(std::vector<Edge> tour);
 
+    void generateInitial();
+
+};
 
 #endif //AVALGPROJ1_LINKERNINGHAN_H
