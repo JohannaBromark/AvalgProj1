@@ -4,6 +4,7 @@
 #include <math.h>
 #include <tuple>
 #include "Node.h"
+#include "LinKernighan.h"
 
 using namespace std;
 
@@ -35,5 +36,11 @@ int main() {
     cout << "Hello, World! :)" << endl;
     Node stad1(2.3, 4.3, 0);
     cout << stad1.getIndex() << endl;
-    return 0;
+
+    std::vector<Node> cities2;
+    cities2.emplace_back(Node(1.0, 1.0, 0));
+    cities2.emplace_back(Node(4.0, 4.0, 1));
+    cities2.emplace_back(Node(3.0, 3.0, 2));
+    LinKernighan lin = LinKernighan(cities2);
+
 }

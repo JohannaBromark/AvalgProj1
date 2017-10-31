@@ -14,7 +14,7 @@ LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
     std::cout << e.getDistance() << " hej" << std::endl;
 
     e = setOfX.at(1);
-    std::cout << e.getDistance() << std::endl;
+    std::cout << e.getDistance() << " hejdå"<< std::endl;
 
 
     /*
