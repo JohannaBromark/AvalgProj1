@@ -59,6 +59,13 @@ void connectNodes(Node& conNode1, Node& conNode2, int& counter){
     }
 }
 
+void addNodesToHub(vector<Node>& citiesVector){
+    //Works!!
+    for (int n = 1; n<citiesVector.size(); n++){
+        citiesVector[n].connectToHub(0);
+    }
+}
+
 void clarkeWright(vector<Node>& cities){
     //The first city in the vector is the hub.
     vector<tuple<float, Node&, Node&>> savings = calcSavings(cities);
@@ -94,8 +101,13 @@ int main() {
     cout << stad2.getIndex() << endl;
 
     vector<Node> citiesTest = {stad1, stad2, stad3};
-    //stad1.addNeighbor(1);
 
+    cout << "Detta borde vara -1 " << citiesTest[1].getNeighbourIndex(1) << endl;
+    
+    addNodesToHub(citiesTest);
+    cout << "Detta borde vara 0" << citiesTest[1].getNeighbourIndex(1) << endl;
+    
+    
 
     std::vector<Node> cities2;
 
