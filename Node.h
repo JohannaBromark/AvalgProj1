@@ -11,8 +11,8 @@ class Node {
         Node(float x, float y, int index);
         float calcDistance (Node& otherCity);        
         std::tuple<float, float> getXY();
+        bool operator==(Node& other);		
         int getIndex();
-        bool operator==(Node& other);
     private:
         float x, y;
         int index;
