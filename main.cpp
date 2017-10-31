@@ -95,6 +95,11 @@ void clarkeWright(vector<Node>& cities){
         //Checks if it is OK that the nodes can be connected and connects them. 
         connectNodes(node1, node2, refNumHub);
     }
+    for (int k = 1; k < cities.size(); k++){
+        if (cities[k].isConnectedToHub()){
+            cities[0].addNeighbor(&cities[k]);
+        }
+    }
 }
 
 int main() {
@@ -120,6 +125,8 @@ int main() {
     cout << "Detta borde vara? " << citiesTest[1].getNeighbor(2)->getIndex() << endl;
     cout << "Vad är detta nu? " << citiesTest[2].getNeighbor(1)->getIndex() << endl;
     cout << "Detta borde vara? " << citiesTest[2].getNeighbor(2)->getIndex() << endl;
+    cout << "hubbens kopplingar" << citiesTest[0].getNeighbor(1)->getIndex() << endl;
+    cout << "hubbens kopplingar" << citiesTest[0].getNeighbor(2)->getIndex() << endl;
     */
     
     std::vector<Node> cities2;
