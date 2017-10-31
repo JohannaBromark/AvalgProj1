@@ -18,6 +18,7 @@ class Node {
         bool isOnlyConnectedToHub();
         void connectToHub(Node *hubNode);
         Node* getNeighbor(int neighborNum);
+        void changeNeighbor(int neighborN, Node *aNewNeighbor);
 
     private:
         float x, y;

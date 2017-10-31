@@ -60,3 +60,12 @@ using namespace std;
         }
         return 0; //In case of wrong index 
     }
+
+    void Node::changeNeighbor(int neighborN, Node *aNewNeighbor){
+        if (neighborN == 1){
+            neighbor1 = aNewNeighbor;
+        }
+        if (neighborN == 2){
+            neighbor2 = aNewNeighbor;
+        }
+    }
