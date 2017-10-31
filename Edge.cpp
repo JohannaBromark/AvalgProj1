@@ -1,25 +1,33 @@
 #include "Edge.h"
 #include <iostream>
 
-Edge::Edge(Node& node1, Node& node2) : to(node1), from(node2) {
+Edge::Edge(Node& node1in, Node& node2in) : node1(), node2() {
+    node1 =
     distance = node1.calcDistance(node2);
 }
+
+//Copy-constructor
+Edge::Edge(const Edge& e) : node1(*(e.getNode(1))), node2(*(e.getNode(2))){
+    distance = e.getDistance();
+};
 
 float Edge::getDistance() const{
     return distance;
 }
 
-Node& Edge::getToNode() {
-    return to;
+Node Edge::getNode(int index) const {
+    if (index == 2) {
+        return *node2;
+    }
+    else {
+        return *node1;
+    }
 }
 
-Node& Edge::getFromNode() {
-    return from;
-}
 
 bool Edge::operator==(Edge& other) {
-    if ( (to == other.getToNode() && from == other.getFromNode())
-         || (to == other.getFromNode() && from == other.getToNode()) ) {
+    if ( (node1 == other.getNode(1) && node2 == other.getNode(2))
+         || (node1 == other.getNode(2) && node2 == other.getNode(1)) ) {
         return true;
     }
     else {

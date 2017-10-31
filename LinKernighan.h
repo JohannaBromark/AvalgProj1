@@ -17,11 +17,12 @@ private:
     float G;
     std::vector<Node>& cities;
     std::vector<Edge> setOfX;
-    std::vector<Edge> setOfY;
+    std::vector<Edge*> setOfY;
 
-    bool checkIfTour(std::vector<Edge> tour);
+    bool checkIfTour(Edge newEdge, int index);
 
     void generateInitial();
+    float calcG();
 
 };
 

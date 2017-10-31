@@ -6,17 +6,18 @@
 class Edge {
     public:
         Edge(Node& node1, Node& node2);
+        Edge(const Edge& e);
         float getDistance() const;
         bool operator==(Edge& other);
         bool operator>(Edge& other);
         bool operator<(Edge& other);
-        Node& getToNode();
-        Node& getFromNode();
+        Node getNode(int index) const;
+
 
     private:
         float distance;
-        Node& to;
-        Node& from;
+        Node* node1;
+        Node* node2;
 };
 
 
