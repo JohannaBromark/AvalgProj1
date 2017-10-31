@@ -13,11 +13,12 @@ class Node {
         std::tuple<float, float> getXY();
         bool operator==(Node& other);		
         int getIndex();
+
     private:
         float x, y;
         int index;
-        Node& neighbor1;
-        Node& neighbor2;
+        int neighbor1;
+        int neighbor2;
 };
 
 #endif //_Node_h

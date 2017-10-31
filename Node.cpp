@@ -3,6 +3,8 @@ using namespace std;
 
     Node::Node (float xIn, float yIn, int indexIn) {
         x = xIn; y = yIn; index = indexIn;
+        neighbor1 = -1;
+        neighbor2 = -1;
     }
 
     tuple<float, float> Node::getXY() {
@@ -20,3 +22,5 @@ using namespace std;
     bool Node::operator== (Node& other) {
         return index == other.getIndex();
     }
+
+    
