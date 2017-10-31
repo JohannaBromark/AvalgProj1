@@ -38,7 +38,7 @@ vector<tuple<float, Node&, Node&>> calcSavings(vector<Node>& cityVector){
 
     //Loop over all cites and calcs the distance between them. Does not include the hub.
     for (int city1 = 1; city1 < numCities; city1++){
-        for (int city2 = 2; city2 < numCities; city2++){
+        for (int city2 = city1+1; city2 < numCities; city2++){
             Node& node1 = cityVector[city1];
             Node& node2 = cityVector[city2];
             float saving = hub.calcDistance(node1)+hub.calcDistance(node2) - node1.calcDistance(node2);
@@ -67,6 +67,8 @@ void addNodesToHub(vector<Node>& citiesVector){
 }
 
 void clarkeWright(vector<Node>& cities){
+    //Seems to work!!
+
     //The first city in the vector is the hub.
     vector<tuple<float, Node&, Node&>> savings = calcSavings(cities);
     
@@ -76,9 +78,12 @@ void clarkeWright(vector<Node>& cities){
     //Looping over the savings, which are in an non-increasing order
     for (int i = 0; i<savings.size(); i++){
         // When the hub only has two connections left, we're done. 
-        if (numHubConnections == 2){break;}
+        if (numHubConnections == 2){
+            cout << "breaks: " << endl;
+            break;
+        }
         
-        tuple<float, Node, Node> save = savings.front();
+        tuple<float, Node&, Node&> save = savings.front();
         
         pop_heap(savings.begin(), savings.end(), sortOrder);        
         
@@ -101,14 +106,18 @@ int main() {
     cout << stad2.getIndex() << endl;
 
     vector<Node> citiesTest = {stad1, stad2, stad3};
-
+/*
     cout << "Detta borde vara -1 " << citiesTest[1].getNeighbourIndex(1) << endl;
     
     addNodesToHub(citiesTest);
     cout << "Detta borde vara 0" << citiesTest[1].getNeighbourIndex(1) << endl;
+    clarkeWright(citiesTest);
+    cout << "Vad är detta nu? " << citiesTest[1].getNeighbourIndex(1) << endl;
+    cout << "Detta borde vara? " << citiesTest[1].getNeighbourIndex(2) << endl;
+    cout << "Vad är detta nu? " << citiesTest[2].getNeighbourIndex(1) << endl;
+    cout << "Detta borde vara? " << citiesTest[2].getNeighbourIndex(2) << endl;
+    */
     
-    
-
     std::vector<Node> cities2;
 
 
@@ -119,4 +128,5 @@ int main() {
     LinKernighan lin = LinKernighan(cities2);
 
     return 0;
+    
 }
