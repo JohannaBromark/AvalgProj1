@@ -5,6 +5,7 @@ using namespace std;
         x = xIn; y = yIn; index = indexIn;
         neighbor1 = -1;
         neighbor2 = -1;
+        connectedHub = false;
     }
 
     tuple<float, float> Node::getXY() {
@@ -23,4 +24,33 @@ using namespace std;
         return index == other.getIndex();
     }
 
-    
+    void Node::addNeighbor(int i){
+        if (neighbor1 == -1){
+            neighbor1 = i;
+            connectedHub = false;
+        } 
+        else {
+            neighbor2 = i;
+        }
+    }
+
+    bool Node::isConnectedToHub(){
+        //A node is connected to hub iff it has both connections to the hub. 
+        return connectedHub;
+    }
+
+    void Node::connectToHub(int hubIndex){
+        neighbor1 = hubIndex;
+        neighbor2 = hubIndex;
+        connectedHub = true;    
+    }
+
+    int Node::getNeighbourIndex(int neighborNum){
+        if (neighborNum == 1){
+            return neighbor1;
+        }
+        if (neighborNum == 2){
+            return neighbor2;
+        }
+        return -1; //In case of 
+    }

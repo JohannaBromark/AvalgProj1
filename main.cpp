@@ -4,36 +4,95 @@
 #include <math.h>
 #include <tuple>
 #include "Node.h"
+#include <vector>
+#include <tuple>
+#include <algorithm>
 
 using namespace std;
 
-/*
-class Savings {
-    float value;
-    City& cityBase, city1, city2; //Referenser för att spara plats (?)
+bool sortOrder(tuple<float, Node&, Node&>& tuple1, tuple<float, Node&, Node&>& tuple2){
+    //Works!!
+    float f1 = get<0>(tuple1);
+    float f2 = get<0>(tuple2);
+    
+    return f2 < f1;
+}
 
-public:
-    Savings (City& cityBaseIn, City& city1In, City& city2In)
-        : cityBase(cityBaseIn), city1(city1In), city2(city2In) //Referenserna måste skapas direkt, görs på detta sätt
-    {
-        value = cityBase.calcDistance(city1) + city2.calcDistance(cityBase) - city2.calcDistance(city1);
+vector<tuple<float, Node&, Node&>> calcSavings(vector<Node>& cityVector){
+    //Works!!
+    vector<tuple<float, Node&, Node&>> savingVector;
+    int numCities = cityVector.size();
+    Node& hub = cityVector[0];
+    //Error control
+    if (numCities == 1){
+        tuple<float, Node&, Node&> specTuple1 (0, hub, hub);
+        savingVector.push_back(specTuple1);
+    }
+    //Error control
+    if (numCities == 2){
+        tuple<float, Node&, Node&> specTuple2 (0, hub, cityVector[1]);
+        savingVector.push_back(specTuple2);
+        return savingVector;
     }
 
-    float getValue (){
-        return value;
+    //Loop over all cites and calcs the distance between them. Does not include the hub.
+    for (int city1 = 1; city1 < numCities; city1++){
+        for (int city2 = 2; city2 < numCities; city2++){
+            Node& node1 = cityVector[city1];
+            Node& node2 = cityVector[city2];
+            float saving = hub.calcDistance(node1)+hub.calcDistance(node2) - node1.calcDistance(node2);
+            tuple<float, Node&, Node&> aSaving(saving, node1, node2);
+            savingVector.push_back(aSaving);
+        }
     }
+    make_heap(savingVector.begin(), savingVector.end(), sortOrder);
+    return savingVector;
+}
 
-    bool operator<(Savings& other) {      //Implements < comparator
-        return value < other.getValue();
+void connectNodes(Node& conNode1, Node& conNode2, int& counter){
+    //Only connects two nodes if one of them is only connected to the hub. This prevents sub cycles. 
+    if (conNode1.isConnectedToHub() || conNode2.isConnectedToHub()){
+        conNode1.addNeighbor(conNode2.getIndex());
+        conNode2.addNeighbor(conNode1.getIndex());
+        counter--;
     }
-    bool operator>(Savings& other) { //Implements > comparator
-        return value > other.getValue();
+}
+
+void clarkeWright(vector<Node>& cities){
+    //The first city in the vector is the hub.
+    vector<tuple<float, Node&, Node&>> savings = calcSavings(cities);
+    
+    //Counter for # connectsion the hub has. Must be at least 2. Initially two per city
+    int numHubConnections = (cities.size()-1)*2;
+    int& refNumHub = numHubConnections;
+    //Looping over the savings, which are in an non-increasing order
+    for (int i = 0; i<savings.size(); i++){
+        // When the hub only has two connections left, we're done. 
+        if (numHubConnections == 2){break;}
+        
+        tuple<float, Node, Node> save = savings.front();
+        
+        pop_heap(savings.begin(), savings.end(), sortOrder);        
+        
+        //Retreives the two nodes that makes the save 
+        Node& node1 = get<1>(save);
+        Node& node2 = get<2>(save);
+        
+        //Checks if it is OK that the nodes can be connected and connects them. 
+        connectNodes(node1, node2, refNumHub);
     }
-};
-*/
+}
+
 int main() {
     cout << "Hello, World! :)" << endl;
     Node stad1(2.3, 4.3, 0);
+    Node stad2(1.0, 2.4, 1);
+    Node stad3(1.5, 5.4, 2);
+
     cout << stad1.getIndex() << endl;
+    cout << stad2.getIndex() << endl;
+
+    vector<Node> citiesTest = {stad1, stad2, stad3};
+    //stad1.addNeighbor(1);
     return 0;
 }
