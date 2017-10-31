@@ -16,6 +16,7 @@ public:
 private:
     float G;
     std::vector<Node>& cities;
+    std::vector<Edge> initialTour;
     std::vector<Edge> setOfX;
     std::vector<Edge> setOfY;
 

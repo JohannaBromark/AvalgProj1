@@ -9,7 +9,6 @@
 LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
     generateInitial();
     G = 0;
-    //PROVARLITE
 
     Edge e = setOfX.at(0);
     std::cout << e.getDistance() << " hej" << std::endl;
@@ -41,6 +40,10 @@ LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
         i ++;
         //Step 6
         fromT = setOfX.at(i).getNode(0);
+        for (Edge possibleEdge : setOfX) {
+
+        }
+        /*
         int nextI = i;
         while (nextI < cities.size()) {
             nextI++;
@@ -56,7 +59,7 @@ LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
                     setOfX[i] = possibleEdge;
                 }
             };
-        }
+        }*/
         //Implement going to step 2 if new tour better than before
 
         //Step 7
