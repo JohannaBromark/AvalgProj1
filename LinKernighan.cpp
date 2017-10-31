@@ -9,6 +9,7 @@
 LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
     generateInitial();
     G = 0;
+    //PROVARLITE
 
     Edge e = setOfX.at(0);
     std::cout << e.getDistance() << " hej" << std::endl;
