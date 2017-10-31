@@ -69,3 +69,14 @@ using namespace std;
             neighbor2 = aNewNeighbor;
         }
     }
+
+    int Node::getNeighborInd(Node& neighbor){
+        if (neighbor == *neighbor1) {
+            return 1;
+        } else if (neighbor == *neighbor2){
+            return 2;
+        } else{
+            return 0;
+        }
+    }
+    

@@ -19,6 +19,7 @@ class Node {
         void connectToHub(Node *hubNode);
         Node* getNeighbor(int neighborNum);
         void changeNeighbor(int neighborN, Node *aNewNeighbor);
+        int getNeighborInd(Node& neighbor);
 
     private:
         float x, y;
