@@ -1,21 +1,16 @@
 //node.h
 
-//Guard
 #ifndef _Node_h   //    if node.h hasn't been included yet...
 #define _Node_h   //    #define this so the compiler knows it has been included
 #include <tuple>
 #include <math.h>
 
-//class Node;
-
 class Node { 
 
     public:
         Node(float x, float y, int index);
-        float calcDistance (Node& otherCity);
+        float calcDistance (Node& otherCity);        
         std::tuple<float, float> getXY();
-        bool operator==(Node& other);
-        int getIndex();
     private:
         float x, y;
         int index;
@@ -23,4 +18,4 @@ class Node {
         Node* neighbor2;
 };
 
-#endif 
+#endif //_Node_h

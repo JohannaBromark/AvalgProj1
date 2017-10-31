@@ -1,7 +1,3 @@
-//
-// Created by Isabelle Hallman on 2017-10-30.
-//
-
 #include "Edge.h"
 #include <iostream>
 

@@ -1,10 +1,7 @@
-//
-// Created by Isabelle Hallman on 2017-10-30.
-//
 
-#ifndef AVALGPROJ1_LK_H
-#define AVALGPROJ1_LK_H
-#include "node.h";
+#ifndef _Edge_h
+#define _Edge_h
+#include "Node.h"
 
 class Edge {
     public:
@@ -23,4 +20,4 @@ class Edge {
 };
 
 
-#endif //AVALGPROJ1_LK_H
+#endif //_Edge_h

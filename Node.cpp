@@ -1,4 +1,3 @@
-// in node.cpp
 #include "Node.h"
 using namespace std;
 
