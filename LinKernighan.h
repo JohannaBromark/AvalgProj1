@@ -11,7 +11,7 @@ class Node;
 
 class LinKernighan {
 public:
-    LinKernighan(std::vector<Node>& cities);
+    LinKernighan(std::vector<Node>& citiesIn);
 
 private:
     float G;
@@ -19,7 +19,7 @@ private:
     std::vector<Edge> setOfX;
     std::vector<Edge> setOfY;
 
-    bool checkIfTour(std::vector<Edge> tour);
+    bool checkIfTour(Edge newEdge, int index);
 
     void generateInitial();
 
