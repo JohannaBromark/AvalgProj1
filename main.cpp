@@ -7,6 +7,7 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include "LinKernighan.h"
 
 using namespace std;
 
@@ -95,4 +96,11 @@ int main() {
     vector<Node> citiesTest = {stad1, stad2, stad3};
     //stad1.addNeighbor(1);
     return 0;
+
+    std::vector<Node> cities2;
+    cities2.emplace_back(Node(1.0, 1.0, 0));
+    cities2.emplace_back(Node(4.0, 4.0, 1));
+    cities2.emplace_back(Node(3.0, 3.0, 2));
+    LinKernighan lin = LinKernighan(cities2);
+
 }
