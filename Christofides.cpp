@@ -11,16 +11,17 @@ int compareEdge(const void *s1, const void *s2)
 {
     struct EdgeK *e1 = (struct EdgeK *) s1;
     struct EdgeK *e2 = (struct EdgeK *) s2;
-    return e1->weight - e2->weight;
+    return int(e1->weight - e2->weight);
 }
 
-Christofides::Christofides(std::vector<Node>& citiesIn) : cities(citiesIn) {
+Christofides::Christofides(std::vector<Node>& citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
     Graph fullGraph;
     fullGraph.v = (int) cities.size();
     fullGraph.e = fullGraph.v*(fullGraph.v-1)/2;
     fullGraph.edges = new EdgeK[fullGraph.e];
     addEdges();
     kruskal();
+
 }
 
 void Christofides::addEdges(){
@@ -38,11 +39,19 @@ void Christofides::addEdges(){
 
 void Christofides::kruskal(){
     //Create minimal spanning tree through Kruskal's algorithm
-    struct EdgeK result[fullGraph.v-1];
+    struct EdgeK result[fullGraph.v - 1];
     std::qsort(fullGraph.edges, fullGraph.e, sizeof(struct EdgeK), compareEdge);
-    int i = 0;
-    while (i < fullGraph.v - 1) {
 
+    int i, n;
+    for (i = n = 0; i < fullGraph.e && n < fullGraph.v - 1; i++) {
+        int u = fullGraph.edges[i].from; int v = fullGraph.edges[i].to;
+        if (nodeSets.findParent(u) != nodeSets.findParent(v)) {
+            result[n] = fullGraph.edges[i];
+            nodeSets.addDegree(u);
+            nodeSets.addDegree(v);
+            n++;
+            nodeSets.unite(v, u);
+        }
     }
 }
 

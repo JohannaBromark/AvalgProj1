@@ -17,13 +17,29 @@ struct Graph {
     struct EdgeK* edges;
 };
 
-class Sets {
-    int n, *ranks, *parents;
+struct Vertix {
+    float x, y;
+    int degree;
+};
 
+class Sets {
+    int n, *ranks, *parents, *degree;
+public:
     Sets(int inN) {
         n = inN;
         ranks = new int[n];
         parents = new int[n];
+        degree = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            ranks[i] = 1;
+            parents[i] = i;
+            degree[i] = 0;
+        }
+    }
+
+    void addDegree(int vertix) {
+        degree[vertix] += 1;
     }
 
     void unite(int x, int y) {
@@ -55,6 +71,7 @@ private:
     void addEdges();
     std::vector<Node>& cities;
     Graph fullGraph;
+    Sets nodeSets;
 
 };
 
