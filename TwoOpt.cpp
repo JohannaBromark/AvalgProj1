@@ -20,36 +20,42 @@ int TwoOpt::trySwap(){
 
 
     // First edge is choosen at random
-    node1 = &nodes.at(nodeInd);  // node1 pekar på adresplatsen för pekaren 
-    node2 = &node1.getNeighbor(2);
+    node1 = &nodes.at(nodeInd);  // node1 is a pointer that points at a pointer
+    node2 = &node1.getNeighbor(2); // node2 is a pointer that points at a pointer
 
 
     // Next edge is found by jumping dist forward
     node3 = &node2.getNeighbor(2);
-    Node** prev = *node2;
+    prev = *node2; // prev is the value at the address that is pointed to by the pointer node 2
     for(int a=1; a<dist; a=a+1) {
-        prev = node3;        
+        prev = *node3; // if prev is equal to the value at the adress that is pointed to by node3
         if(node3.getNeighbor(2) != prev){
-            node3 = &node3.getNeighbor(2);
+            node3 = &node3.getNeighbor(2); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         } else {
-            node3 = &node3.getNeighbor(1);
+            node3 = &node3.getNeighbor(1); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         }
     }
 
     // Edge from node3 to node4 is not to "go back"
     if(node3.getNeighbor(2) != prev){
-        Node& node4 = *node3.getNeighbor(2);
+        node4 = &node3.getNeighbor(2); // node4 is a pointer that points at a pointer
     } else {
-        Node& node4 = *node3.getNeighbor(1);
+        node4 = &node3.getNeighbor(1); // node4 is a pointer that points at a pointer
     }
 
 
     // calculate distances
-    int ogDist = node1.calcDistance(node2) + node3.calcDistance(node4);
-    int newDist = node1.calcDistance(node3) + node2.calcDistance(node4);
+    // get the value from the adresses that are pointed to by node1-4
+    int ogDist = *node1.calcDistance(node2) + *node3.calcDistance(node4);
+    int newDist = *node1.calcDistance(node3) + *node2.calcDistance(node4);
     
     // if the new way is shorter, swap egdes
     if(newDist < ogDist){
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        // HEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPpp
+        // I want to change the objects that gets pointed to by node1-4
+        // HUUUUUUUUUUUUUUR?
         node1.changeNeigbor(2, node3);
         
         node2.changeNeigTo(node1, node4);
