@@ -21,6 +21,8 @@ class Node {
         void changeNeighbor(int neighborN, Node *aNewNeighbor);
         void changeNeigTo(Node& oldNeigh, Node& newNeigh);
         int getNeighborInd(Node& neighbor);
+        bool hasNeighbor(Node& posNeighbor);
+        bool isVisited();
 
     private:
         float x, y;
@@ -29,6 +31,7 @@ class Node {
         Node *neighbor2;
         bool oneCon2Hub;
         bool twoCon2Hub;
+        bool visited;
 };
 
 #endif //_Node_h
