@@ -18,7 +18,7 @@ private:
 
     std::vector<Node&>& cities;
     
-    void trySwap();
+    int trySwap();
 
 };
 
