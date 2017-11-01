@@ -6,7 +6,11 @@
 #include <iostream>
 
 LinKernighan::LinKernighan(std::vector<Node>& citiesIn) : cities(citiesIn){
+
     std::cout << "Påbörjar..." << cities.size() << std::endl;
+    Edge test = Edge(cities.at(0), cities.at(1));
+    std::cout << "Test " << test.getNode(1).getIndex() << ", " << cities.at(0).getIndex() << std::endl;
+
     generateInitial();
     std::cout << "Längd " << initialTour.size() << std::endl;
     std::vector<Edge> newTour = initialTour;

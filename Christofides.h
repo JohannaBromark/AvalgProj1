@@ -17,9 +17,36 @@ struct Graph {
     struct EdgeK* edges;
 };
 
-struct Set {
-    struct EdgeK* edges;
+class Sets {
+    int n, *ranks, *parents;
+
+    Sets(int inN) {
+        n = inN;
+        ranks = new int[n];
+        parents = new int[n];
+    }
+
+    void unite(int x, int y) {
+        int xParent = findParent(x);
+        int yParent = findParent(y);
+        if (xParent == yParent) return;
+        else if (ranks[xParent] < ranks[yParent]) {
+            parents[x] = parents[y]; ranks[y] += ranks[x];
+        }
+        else {
+            parents[y] = parents[x]; ranks[x] += ranks[y];
+        }
+    }
+
+    int findParent(int x) {
+        if (parents[x] == x) return x;
+        else {
+            return findParent(parents[x]);
+        }
+    }
 };
+
+
 
 class Christofides {
     explicit Christofides(std::vector<Node>& cities);
