@@ -135,7 +135,7 @@ int main() {
     cout << "hejhejhej" <<endl;
     cities2.emplace_back(Node(1.0, 1.0, 0));
     cities2.emplace_back(Node(4.0, 4.0, 1));
-    cities2.emplace_back(Node(3.0, 3.0, 2));
+    cities2.emplace_back(Node(10.0, 5.0, 2));
     cities2.emplace_back(Node(3.0, 4.0, 3));
     LinKernighan lin = LinKernighan(cities2);
 
