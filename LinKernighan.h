@@ -17,13 +17,15 @@ private:
     float G;
     std::vector<Node>& cities;
     std::vector<Edge> initialTour;
+    std::vector<Edge> newTour;
     std::vector<Edge> setOfX;
     std::vector<Edge> setOfY;
 
     bool checkIfTour(Edge newEdge, int index);
     bool checkIfRepeated(Edge newEdge, int setToCheck, int index);
-    long calcTourDistance();
+    long calcTourDistance(std::vector<Edge>& tour);
     void printTour(std::vector<Edge>& tourToPrint);
+    bool findStartXY(int startIndex);
 
     void generateInitial();
 
