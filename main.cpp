@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "LinKernighan.h"
 #include "Savings.h"
+#include <string>
 
 using namespace std;
 /*
@@ -178,7 +179,26 @@ void greedy(vector<Node>& towns, Node& currentNode){
 
 
 
+int main(){
+    
+    int numTowns;
+    cin >> numTowns;
+    
+    //int numTowns = std::stoi(getline(input));
+    for (int n = 0; n<=numTowns; n++){
+        string line;
+        string line2;
+        cin >> line;
+        cin >> line2;
+        cout << "LIne: " << line <<" Line: " <<line2<< endl;
+    }
+    cout << "Hello world!" << endl;
 
+}
+
+
+
+/*
 int main(){
     cout << "Hello, World! :)" << endl;
     Node stad1(2.3, 4.3, 0);
@@ -186,6 +206,7 @@ int main(){
     Node stad3(1.5, 5.4, 2);
     Node stad4(3.6, 3.5, 3);
     Node stad5(1.5, 7.4, 3);
+
     int ett = 1;
     int ett2 = ett;
     ett = 3;
@@ -210,8 +231,8 @@ int main(){
     cout << citiesTest[3].getNeighbor(1)->getIndex();
     cout << citiesTest[3].getNeighbor(2)->getIndex() << endl;
 
-
-
+}
+*/
     /*
     cout << "I mainen innan hubconnection" << endl;
     cout << citiesTest.at(1).getIndex() << endl;
@@ -269,5 +290,6 @@ int main(){
     LinKernighan lin = LinKernighan(cities2);
 
     return 0;
-    */
+    
 }
+*/
