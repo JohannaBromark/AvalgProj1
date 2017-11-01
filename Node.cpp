@@ -3,10 +3,11 @@ using namespace std;
 
     Node::Node (float xIn, float yIn, int indexIn) {
         x = xIn; y = yIn; index = indexIn;
-        twoCon2Hub = false;
-        oneCon2Hub = false;
+        //twoCon2Hub = false;
+        //oneCon2Hub = false;
         neighbor1 = NULL;
         neighbor2 = NULL;
+        visited = false;
     }
 
     tuple<float, float> Node::getXY() {
@@ -24,7 +25,7 @@ using namespace std;
     bool Node::operator== (Node& other) {
         return index == other.getIndex();
     }
-
+/*
     void Node::addNeighbor(Node *newNeighbor){
         if (twoCon2Hub){
             neighbor1 = newNeighbor;
@@ -35,6 +36,19 @@ using namespace std;
             oneCon2Hub = false;
         }
     }
+*/
+
+    void Node::addNeighbor(Node* newNeighbor){
+        if (neighbor1 == 0){
+            neighbor1 = newNeighbor;
+            visited = true;
+        }
+        else if(neighbor2 == 0 && neighbor1->getIndex() != newNeighbor->getIndex()){
+            neighbor2 = newNeighbor;
+        }
+    }
+
+
 
     bool Node::isConnectedToHub(){
         //A node is connected to hub iff it has at least one connection to the hub. 
@@ -86,6 +100,21 @@ using namespace std;
         if( oldNeighInd != 0){
             changeNeighbor(oldNeighInd, &newNeigh);
         }
+    }
+
+    bool Node::hasNeighbor(Node& posNeighbor){
+        if (neighbor1 == 0){
+            return false;
+        }
+        if (neighbor2 == 0){
+            return neighbor1->getIndex() == posNeighbor.getIndex(); 
+        }
+
+        return neighbor1->getIndex() == posNeighbor.getIndex() || neighbor2->getIndex() == posNeighbor.getIndex();
+    }
+
+    bool Node::isVisited(){
+        return visited;
     }
     
 

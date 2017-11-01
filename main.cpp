@@ -9,12 +9,12 @@
 #include "Savings.h"
 
 using namespace std;
-
+/*
 bool sortOrder(Savings& save1, Savings& save2){
     return save2.getSave() < save1.getSave();
 }
 
-/*
+
 bool sortOrder(const tuple<float, Node, Node>& tuple1, const tuple<float, Node, Node>& tuple2){
     //Works!!
     float f1 = get<0>(tuple1);
@@ -22,7 +22,7 @@ bool sortOrder(const tuple<float, Node, Node>& tuple1, const tuple<float, Node, 
     
     return f2 < f1;
 }
-*/
+
 vector<tuple<float, Node&, Node&>> calcSavings(vector<Node>& cityVector){
     //Works!!
 
@@ -85,6 +85,7 @@ void addNodesToHub(vector<Node>& citiesVector){
     }
 }
 
+
 void clarkeWright(vector<Node>& cities){
     //Seems to work!!
 
@@ -138,25 +139,80 @@ void clarkeWright(vector<Node>& cities){
             cities[0].addNeighbor(&cities[k]);
         }
     }
+
+}
+*/
+
+void greedy(vector<Node>& towns, Node& currentNode){
+    float minDistance = -1.0;
+    float distance; 
+    int closestNeighIndex = 0;
+    //cout << "Current Node: " << currentNode.getIndex() << endl;
+    for(int i = 0; i<towns.size(); i++){
+        
+        if (currentNode.getIndex() != towns[i].getIndex()){
+            distance = currentNode.calcDistance(towns[i]);
+            //cout << "räknar avstånd: " <<distance << endl;
+
+            //cout << (distance<minDistance) << (minDistance <0.0) << endl;
+
+            //cout << currentNode.hasNeighbor(towns[i])<<endl;
+            //cout << towns[i].isVisited() <<endl;
+            if ((distance<minDistance || minDistance<0) && !currentNode.hasNeighbor(towns[i]) && !towns[i].isVisited()){
+                //cout << "ändrar avstånd" << endl;
+                minDistance = distance; 
+                closestNeighIndex = towns[i].getIndex();
+            }
+        }
+    }
+    currentNode.addNeighbor(&towns[closestNeighIndex]);
+    towns[closestNeighIndex].addNeighbor(&currentNode);
+    if (closestNeighIndex != 0){
+        greedy(towns, towns[closestNeighIndex]);
+    }
+    else {
+        currentNode.addNeighbor(&towns[0]);
+        towns[0].addNeighbor(&currentNode);
+    }
 }
 
-int main() {
+
+
+
+int main(){
     cout << "Hello, World! :)" << endl;
     Node stad1(2.3, 4.3, 0);
     Node stad2(1.0, 2.4, 1);
     Node stad3(1.5, 5.4, 2);
     Node stad4(3.6, 3.5, 3);
     Node stad5(1.5, 7.4, 3);
+    int ett = 1;
+    int ett2 = ett;
+    ett = 3;
+    //cout << ett2 << endl;
 
-    cout << stad1.getIndex() << endl;
-    cout << stad2.getIndex() << endl;
+    //cout << stad1.getIndex() << endl;
+    //cout << stad2.getIndex() << endl;
 
     vector<Node> citiesTest = {stad1, stad2, stad3, stad4};
 
     if(!(citiesTest[1].getNeighbor(1) == 0)){
         cout << "Detta borde vara -1 " << citiesTest[1].getNeighbor(1)->getIndex() << endl;
     }
-    
+    greedy(citiesTest, citiesTest[0]);
+
+    cout << citiesTest[0].getNeighbor(1)->getIndex();
+    cout << citiesTest[0].getNeighbor(2)->getIndex() << endl;
+    cout << citiesTest[1].getNeighbor(1)->getIndex();
+    cout << citiesTest[1].getNeighbor(2)->getIndex()<< endl;
+    cout << citiesTest[2].getNeighbor(1)->getIndex();
+    cout << citiesTest[2].getNeighbor(2)->getIndex() << endl;
+    cout << citiesTest[3].getNeighbor(1)->getIndex();
+    cout << citiesTest[3].getNeighbor(2)->getIndex() << endl;
+
+
+
+    /*
     cout << "I mainen innan hubconnection" << endl;
     cout << citiesTest.at(1).getIndex() << endl;
     cout << citiesTest[2].getIndex() << endl;
@@ -173,6 +229,7 @@ int main() {
     sort(saveVector.begin(), saveVector.end(), sortOrder);
 
     cout << "Efter sortering";
+    */
     //cout << saveVector[0].getSave() << endl;
     //cout << saveVector[1].getSave() << endl;
 
