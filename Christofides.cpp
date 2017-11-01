@@ -16,7 +16,6 @@ int compareEdge(const void *s1, const void *s2)
 }
 
 Christofides::Christofides(std::vector<Node>& citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
-    Graph fullGraph;
     fullGraph.v = (int) cities.size();
     fullGraph.e = fullGraph.v * (fullGraph.v-1)/2;
     fullGraph.edges = new EdgeK[fullGraph.e];
@@ -70,12 +69,14 @@ Graph Christofides::perfectMatching() {
             edges[counter].weight = cities.at(i).calcDistance(cities.at(j));
         }
     }
-    std::set usedNodes;
-    Graph newGraph; newGraph.v = fullGraph.v; newGraph.e = nUnevenV / 2 + ;
+    std::set<int> usedNodes;
+    newGraph.v = fullGraph.v; newGraph.e = nUnevenV / 2 + fullGraph.v - 1;
+    newGraph.edges = new EdgeK[newGraph.e];
 
     std::qsort(edges, n, sizeof(struct EdgeK), compareEdge);
     for (counter = i = 0; i < n && counter < nUnevenV/2; i++) {
         if (!usedNodes.count(edges[i].from) && !usedNodes.count(edges[i].to) ){
+
             usedNodes.insert(edges[i].from); usedNodes.insert(edges[i].to);
             newGraph.edges[newGraph.e - counter] = edges[i];
             counter++;

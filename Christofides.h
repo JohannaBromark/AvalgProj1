@@ -84,7 +84,7 @@ private:
     void hierholzer(); //Find eulerian tour
     void addEdges();
     std::vector<Node>& cities;
-    Graph fullGraph;
+    Graph fullGraph, newGraph;
     Sets nodeSets;
 
 };
