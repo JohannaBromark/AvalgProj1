@@ -21,6 +21,9 @@ private:
     std::vector<Edge> setOfY;
 
     bool checkIfTour(Edge newEdge, int index);
+    bool checkIfRepeated(Edge newEdge, int setToCheck, int index);
+    long calcTourDistance();
+    void printTour(std::vector<Edge>& tourToPrint);
 
     void generateInitial();
 

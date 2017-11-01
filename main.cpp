@@ -106,13 +106,14 @@ int main() {
     Node stad1(2.3, 4.3, 0);
     Node stad2(1.0, 2.4, 1);
     Node stad3(1.5, 5.4, 2);
+    Node stad4(1.5, 7.4, 3);
 
     cout << stad1.getIndex() << endl;
     cout << stad2.getIndex() << endl;
 
     vector<Node> citiesTest = {stad1, stad2, stad3};
 
-    if(!citiesTest[1].getNeighbor(1) == 0){
+    if(!(citiesTest[1].getNeighbor(1) == 0)){
         cout << "Detta borde vara -1 " << citiesTest[1].getNeighbor(1)->getIndex() << endl;
     }
     
@@ -135,6 +136,7 @@ int main() {
     cities2.emplace_back(Node(1.0, 1.0, 0));
     cities2.emplace_back(Node(4.0, 4.0, 1));
     cities2.emplace_back(Node(3.0, 3.0, 2));
+    cities2.emplace_back(Node(3.0, 4.0, 3));
     LinKernighan lin = LinKernighan(cities2);
 
     return 0;
