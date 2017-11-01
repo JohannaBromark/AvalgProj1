@@ -80,4 +80,12 @@ using namespace std;
             return 0;
         }
     }
+
+    void Node::changeNeigTo(Node& oldNeigh, Node& newNeigh){
+        int oldNeighInd = getNeighborInd(oldNeigh);
+        if( oldNeighInd != 0){
+            changeNeighbor(oldNeighInd, &newNeigh);
+        }
+    }
     
+

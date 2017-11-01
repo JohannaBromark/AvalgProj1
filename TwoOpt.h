@@ -11,14 +11,14 @@ extern int neighDist; //every translation unit that includes the header knows ab
 
 class TwoOpt {
 public:
-    TwoOpt(std::vector<Node&>& cities);
+    TwoOpt(std::vector<Node&> &nodes);
 
 private:
-    int numCities;
+    int numNodes;
 
-    std::vector<Node&>& cities;
+    std::vector<Node&> &nodes;
     
-    void trySwap();
+    int trySwap();
 
 };
 
