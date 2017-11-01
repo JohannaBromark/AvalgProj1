@@ -145,11 +145,8 @@ int main() {
     Node stad1(2.3, 4.3, 0);
     Node stad2(1.0, 2.4, 1);
     Node stad3(1.5, 5.4, 2);
-<<<<<<< HEAD
     Node stad4(3.6, 3.5, 3);
-=======
-    Node stad4(1.5, 7.4, 3);
->>>>>>> a507c028107dd695e2c2ff766b63fcf6cf58ebbf
+    Node stad5(1.5, 7.4, 3);
 
     cout << stad1.getIndex() << endl;
     cout << stad2.getIndex() << endl;
