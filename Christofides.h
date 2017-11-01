@@ -6,6 +6,7 @@
 #define AVALGPROJ1_CHRISTOFIDES_H
 #include <iostream>
 #include "Node.h"
+#include <vector>
 
 struct EdgeK {
     int to, from;
@@ -38,6 +39,16 @@ public:
         }
     }
 
+    std::vector<int> generateUnevenVset(){
+        std::vector<int> unevenVset;
+        for (int i = 0; i < n; i++) {
+            if (degree[i] % 2 > 0) {
+                unevenVset.push_back(i);
+            }
+        }
+        return unevenVset;
+    }
+
     void addDegree(int vertix) {
         degree[vertix] += 1;
     }
@@ -67,7 +78,10 @@ public:
 class Christofides {
     explicit Christofides(std::vector<Node>& cities);
 private:
-    void kruskal();
+    void kruskal(); //Find minimum spanning tree
+    void createUnevenVset();
+    Graph perfectMatching();
+    void hierholzer(); //Find eulerian tour
     void addEdges();
     std::vector<Node>& cities;
     Graph fullGraph;

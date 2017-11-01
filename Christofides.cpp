@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 int compareEdge(const void *s1, const void *s2)
 {
@@ -17,11 +18,11 @@ int compareEdge(const void *s1, const void *s2)
 Christofides::Christofides(std::vector<Node>& citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
     Graph fullGraph;
     fullGraph.v = (int) cities.size();
-    fullGraph.e = fullGraph.v*(fullGraph.v-1)/2;
+    fullGraph.e = fullGraph.v * (fullGraph.v-1)/2;
     fullGraph.edges = new EdgeK[fullGraph.e];
     addEdges();
     kruskal();
-
+    perfectMatching();
 }
 
 void Christofides::addEdges(){
@@ -53,5 +54,34 @@ void Christofides::kruskal(){
             nodeSets.unite(v, u);
         }
     }
+}
+
+Graph Christofides::perfectMatching() {
+    std::vector<int> unevenVset = nodeSets.generateUnevenVset();
+    int nUnevenV = unevenVset.size();
+    int counter, i;
+    int n = (int) nUnevenV * (nUnevenV - 1)/2;
+    struct EdgeK edges[n];
+    struct EdgeK result[nUnevenV / 2];
+    for (counter = i = 0; i < nUnevenV-1; i++) {
+        for (int j = i + 1; j < nUnevenV; j++) {
+            edges[counter].from = i;
+            edges[counter].to = j;
+            edges[counter].weight = cities.at(i).calcDistance(cities.at(j));
+        }
+    }
+    std::set usedNodes;
+    Graph newGraph; newGraph.v = fullGraph.v; newGraph.e = nUnevenV / 2 + ;
+
+    std::qsort(edges, n, sizeof(struct EdgeK), compareEdge);
+    for (counter = i = 0; i < n && counter < nUnevenV/2; i++) {
+        if (!usedNodes.count(edges[i].from) && !usedNodes.count(edges[i].to) ){
+            usedNodes.insert(edges[i].from); usedNodes.insert(edges[i].to);
+            newGraph.edges[newGraph.e - counter] = edges[i];
+            counter++;
+        }
+    }
+
+
 }
 
