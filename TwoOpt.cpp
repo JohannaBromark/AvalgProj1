@@ -7,32 +7,32 @@
 #include <math.h>
 #include "TwoOpt.h"
 
-TwoOpt::TwoOpt(std::vector<Node&>& citiesIn) : cities(citiesIn){
+TwoOpt::TwoOpt(std::vector<Node&> &nodesIn) : nodes(&nodesIn){
     int const neighDist = 10; // only the CPP file creates this.
-    int numCities = citiesIn.size();
+    int numNodes = nodesIn.size();
 
 }
 
 int TwoOpt::trySwap(){
     // srand (time(0)); // initialize random seed
-    int nodeInd = rand() %  numCities + 1; // generate number between 1 and numCities
+    int nodeInd = rand() %  numNodes + 1; // generate number between 1 and numNodes
     int dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
 
 
     // First edge is choosen at random
-    Node* node1 = cities.at(nodeInd);
-    Node* node2 = *node1.getNeighbor(2);
+    node1 = &nodes.at(nodeInd);  // node1 pekar på adresplatsen för pekaren 
+    node2 = &node1.getNeighbor(2);
 
 
     // Next edge is found by jumping dist forward
-    Node** node3 = *node2.getNeighbor(2);
+    node3 = &node2.getNeighbor(2);
     Node** prev = *node2;
     for(int a=1; a<dist; a=a+1) {
         prev = node3;        
         if(node3.getNeighbor(2) != prev){
-            node3 = *node3.getNeighbor(2);
+            node3 = &node3.getNeighbor(2);
         } else {
-            node3 = *node3.getNeighbor(1);
+            node3 = &node3.getNeighbor(1);
         }
     }
 
@@ -56,7 +56,7 @@ int TwoOpt::trySwap(){
         node3.changeNeigTo(node4, node1);
         node4.changeNeigTo(node3, node2);
         
-        // swa was made successfully
+        // swap was made successfully
         return 1;
     }
     
