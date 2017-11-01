@@ -1,17 +1,19 @@
 // 2-opt local search 
 
+/// NOT WORKING!
+
 #include <cstdlib>
 // #include <ctime>
 #include <math.h>
 #include "TwoOpt.h"
 
 TwoOpt::TwoOpt(std::vector<Node&>& citiesIn) : cities(citiesIn){
-    int neighDist = 10; // only the CPP file creates this.
+    int const neighDist = 10; // only the CPP file creates this.
     int numCities = citiesIn.size();
 
 }
 
-void TwoOpt::trySwap(){
+int TwoOpt::trySwap(){
     // srand (time(0)); // initialize random seed
     int nodeInd = rand() %  numCities + 1; // generate number between 1 and numCities
     int dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
@@ -49,25 +51,16 @@ void TwoOpt::trySwap(){
     // if the new way is shorter, swap egdes
     if(newDist < ogDist){
         node1.changeNeigbor(2, node3);
-
-        int node2Neigh = node2.getNeighborInd(node1);
-        if( node2Neigh != 0){
-            node2.changeNeigbor(node2Neigh, node4);
-        }
-
-        int node3Neigh = node3.getNeighborInd(node4);
-        if( node3Neigh != 0){
-            node3.changeNeigbor(node3Neigh, node1);
-        }
-
-        int node4Neigh = node4.getNeighborInd(node3);
-        if( node4Neigh != 0){
-            node4.changeNeigbor(node4Neigh, node2);
-        }
-
-
+        
+        node2.changeNeigTo(node1, node4);
+        node3.changeNeigTo(node4, node1);
+        node4.changeNeigTo(node3, node2);
+        
+        // swa was made successfully
+        return 1;
     }
     
-    
+    // no swap was made
+    return 0;
 
 }
