@@ -26,7 +26,7 @@ using namespace std;
     }
 
     void Node::addNeighbor(Node *newNeighbor){
-        if (neighbor1 == 0){
+        if (twoCon2Hub){
             neighbor1 = newNeighbor;
             twoCon2Hub = false;
         } 
@@ -48,7 +48,8 @@ using namespace std;
     void Node::connectToHub(Node *hubNode){
         neighbor1 = hubNode;
         neighbor2 = hubNode;
-        oneCon2Hub, twoCon2Hub = true;
+        oneCon2Hub = true;
+        twoCon2Hub = true;
     }
 
     Node* Node::getNeighbor(int neighborNum){

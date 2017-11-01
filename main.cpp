@@ -1,5 +1,3 @@
-//14:02
-
 #include <iostream>
 #include <math.h>
 #include <tuple>
@@ -62,7 +60,8 @@ void connectNodes(Node& conNode1, Node& conNode2, int& counter){
 void addNodesToHub(vector<Node>& citiesVector){
     //Works!!
     Node &theHub = citiesVector[0];
-    for (int n = 1; n<citiesVector.size(); n++){
+    //adding the hub to itself as well
+    for (int n = 0; n<citiesVector.size(); n++){
         citiesVector[n].connectToHub(&theHub);
     }
 }
@@ -125,8 +124,8 @@ int main() {
     cout << "Detta borde vara? " << citiesTest[1].getNeighbor(2)->getIndex() << endl;
     cout << "Vad är detta nu? " << citiesTest[2].getNeighbor(1)->getIndex() << endl;
     cout << "Detta borde vara? " << citiesTest[2].getNeighbor(2)->getIndex() << endl;
-    cout << "hubbens kopplingar" << citiesTest[0].getNeighbor(1)->getIndex() << endl;
-    cout << "hubbens kopplingar" << citiesTest[0].getNeighbor(2)->getIndex() << endl;
+    cout << "hubbens kopplingar " << citiesTest[0].getNeighbor(1)->getIndex() << endl;
+    cout << "hubbens kopplingar " << citiesTest[0].getNeighbor(2)->getIndex() << endl;
     */
     
     std::vector<Node> cities2;
