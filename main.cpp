@@ -1,18 +1,18 @@
 #include <iostream>
-#include <math.h>
-#include <tuple>
-#include <vector>
-#include <tuple>
-#include <algorithm>
-#include <string>
+//#include <math.h>
+//#include <tuple>
 #include "Node.h"
-#include "clarkeWright.h"
-#include "LinKernighan.h"
-#include "Savings.h"
-#include "TwoOpt.h"
+#include <vector>
+//#include <tuple>
+//#include <algorithm>
+//#include "clarkeWright.h"
+//#include "LinKernighan.h"
+//#include "Savings.h"
+//#include <string>
+#include "Christofides.h"
 
 using namespace std;
-
+/*
 void greedy(vector<Node>& towns, Node& currentNode){
     float minDistance = -1.0;
     float distance; 
@@ -71,28 +71,31 @@ float calcTour(vector<Node>& nodeInRoute){
     return totTour/2;
 }
 
+
+float calcTour2(vector<Node>& nodes) {
+    float dist = 0.0;
+    for (int i = 0; i < nodes.size() - 1; i++) {
+        dist += nodes.at(i).calcDistance(nodes.at(i+1));
+    }
+    dist += nodes.at(0).calcDistance(nodes.at(nodes.size()-1));
+    return dist;
+}*/
 int main(){
-    cout << "Hello, World! :)" << endl;
+
     int numTowns;
     cin >> numTowns;
     
     //int numTowns = std::stoi(getline(input));
-    float inputString;
-    float inputString2;
+    long double inputString;
+    long double inputString2;
     vector<Node> towns;
 
     for(int n = 0; n<(numTowns); n++){
         cin >> inputString;
         cin >> inputString2;
+        cout << inputString << " "<< inputString2 <<" " << n << endl;
         towns.push_back(Node(inputString, inputString2, n));
     }
-    
-    greedy(towns, towns[0]);
-    printTour(towns);        
-    twoOpt(towns);
-    printTour(towns);    
-}
-
 /*
     
     Node stad1(2.3, 4.3, 0);
@@ -100,12 +103,24 @@ int main(){
     Node stad3(1.5, 5.4, 2);
     Node stad4(3.6, 3.5, 3);
     Node stad5(1.5, 7.4, 3);
-    
+*/
     //greedy(towns, towns[0]);
-    clarkeWright(towns);
-    printTour(towns);  
-    cout << calcTour(towns) << endl; 
+    //clarkeWright(towns);
+    //printTour(towns);
+    //cout << calcTour(towns) << endl;
+
+    Christofides testChristofides = Christofides(towns);
+    /*vector<Node> townsInOrder;
+    townsInOrder.push_back(towns.at(0));
+    townsInOrder.push_back(towns.at(8));
+    townsInOrder.push_back(towns.at(4));
+    townsInOrder.push_back(towns.at(9));
+    townsInOrder.push_back(towns.at(2));
+    townsInOrder.push_back(towns.at(6));
+    townsInOrder.push_back(towns.at(1));
+    townsInOrder.push_back(towns.at(7));
+    cout << calcTour2(townsInOrder)<< endl;*/
+
 
     return 0;
 }
-*/

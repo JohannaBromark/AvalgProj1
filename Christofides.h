@@ -7,20 +7,17 @@
 #include <iostream>
 #include "Node.h"
 #include <vector>
+#include <list>
 
 struct EdgeK {
-    int to, from;
-    float weight;
+    int to = -1;
+    int from = -1;
+    double weight;
 };
 
 struct Graph {
     int v, e;
     struct EdgeK* edges;
-};
-
-struct Vertix {
-    float x, y;
-    int degree;
 };
 
 class Sets {
@@ -76,12 +73,15 @@ public:
 
 
 class Christofides {
+
+public:
+    std::list<int> eulerTour;
     explicit Christofides(std::vector<Node>& cities);
+    void printTour(std::list<int> inList);
 private:
-    void kruskal(); //Find minimum spanning tree
-    void createUnevenVset();
-    Graph perfectMatching();
-    void hierholzer(); //Find eulerian tour
+    void kruskal(struct EdgeK result[]); //Find minimum spanning tree
+    void perfectMatching(struct EdgeK result[], std::vector<std::list<int>>& verticesAdjacency);
+    void hierholzer(std::vector<std::list<int>> verticesAdjacency); //Find eulerian tour
     void addEdges();
     std::vector<Node>& cities;
     Graph fullGraph, newGraph;
