@@ -9,17 +9,8 @@ class Node;
 
 extern int neighDist; //every translation unit that includes the header knows about this
 
-class TwoOpt {
-public:
-    TwoOpt(std::vector<Node&> &nodes);
+void twoOpt(std::vector<Node> &nodes);
 
-private:
-    int numNodes;
-
-    std::vector<Node&> &nodes;
-    
-    int trySwap();
-
-};
+int trySwap(std::vector<Node> &nodesIn);
 
 #endif //_TwoOpt_h
