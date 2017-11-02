@@ -7,6 +7,10 @@
 // #include <ctime>
 #include <math.h>
 #include "TwoOpt.h"
+#include <stdlib.h>
+#include <time.h>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -31,20 +35,18 @@ void twoOpt(std::vector<Node> &nodes){
             cout << "tryswap == 1" << endl;
         }
     }
-    
-    
-
 }
 
 int trySwap(std::vector<Node> &nodesIn){   
     int const neighDist = 10; // only the CPP file creates this.
         
     int numNodes = nodesIn.size();
-    // srand (time(0)); // initialize random seed
+    srand(time(NULL)); // initialize random seed
     int nodeInd = rand() %  numNodes; // generate number between 1 and numNodes
     int dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
 
-   
+   cout << "första noden index: " << nodeInd << endl;
+   cout << "antalet steg: " << dist << endl;
     // First edge is choosen at random  
     int node1 = nodeInd;  // node1 is a pointer that points at a pointer
     int node2 = nodesIn[node1].getNeighbor(2)->getIndex(); // node2 is a pointer that points at a pointer
@@ -61,8 +63,7 @@ int trySwap(std::vector<Node> &nodesIn){
             node3 = nodesIn[node3].getNeighbor(2)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         } else {
             node3 = nodesIn[node3].getNeighbor(1)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
-        }
-        
+        }   
     }
 
     int node4;
@@ -73,7 +74,6 @@ int trySwap(std::vector<Node> &nodesIn){
         node4 = nodesIn[node3].getNeighbor(1)->getIndex(); // node4 is a pointer that points at a pointer
     }
 
-
     // calculate distances
     // get the value from the adresses that are pointed to by node1-4
     float ogDist = nodesIn[node1].calcDistance(nodesIn[node2]) +  nodesIn[node3].calcDistance(nodesIn[node4]);
@@ -81,7 +81,7 @@ int trySwap(std::vector<Node> &nodesIn){
     
     // if the new way is shorter, swap egdes
     if(newDist < ogDist){
-
+        cout << "Noder som ska bytas: " << node1 <<" "<< node2 <<" " << node3 << " " << node4;
         nodesIn[node1].changeNeighbor(2, &nodesIn[node3]);
         
         nodesIn[node2].changeNeigTo(nodesIn[node1], nodesIn[node4]);
