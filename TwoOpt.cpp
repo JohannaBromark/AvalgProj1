@@ -25,50 +25,46 @@ int trySwap(std::vector<Node> &nodesIn){
 
 
     // First edge is choosen at random  
-    Node& node1 = nodesIn.at(nodeInd);  // node1 is a pointer that points at a pointer
-    Node& node2 = node1.getNeighbor(2); // node2 is a pointer that points at a pointer
+    int node1 = nodeInd;  // node1 is a pointer that points at a pointer
+    int node2 = nodesIn[node1].getNeighbor(2)->getIndex(); // node2 is a pointer that points at a pointer
 
 
     // Next edge is found by jumping dist forward
-    node3 = &node2.getNeighbor(2);
-    int prev = node2.getIndex(); // prev is the value at the address that is pointed to by the pointer node 2
+    int node3 = nodesIn[node2].getNeighbor(2)->getIndex();
+    int prev = nodesIn[node2].getIndex(); // prev is the value at the address that is pointed to by the pointer node 2
 
 
     for(int a=1; a<dist; a=a+1) {
-        prev = *node3; // if prev is equal to the value at the adress that is pointed to by node3
-        if(node3.getNeighbor(2).getIndex() != prev){
-            node3 = &node3.getNeighbor(2); // node 3 is now the pointer that points at the address where a node that has a neigbor is
+        prev = node3; // if prev is equal to the value at the adress that is pointed to by node3
+        if(nodesIn[node3].getNeighbor(2)->getIndex() != prev){
+            node3 = nodesIn[node3].getNeighbor(2)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         } else {
-            node3 = &node3.getNeighbor(1); // node 3 is now the pointer that points at the address where a node that has a neigbor is
+            node3 = nodesIn[node3].getNeighbor(1)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         }
-        cout << node3.getIndex() << endl;
+        cout << nodesIn[node3].getIndex() << endl;
     }
-
+    int node4;
     // Edge from node3 to node4 is not to "go back"
-    if(node3.getNeighbor(2).getIndex() != prev){
-        node4 = &node3.getNeighbor(2); // node4 is a pointer that points at a pointer
+    if(nodesIn[node3].getNeighbor(2)->getIndex() != prev){
+        node4 = nodesIn[node3].getNeighbor(2)->getIndex(); // node4 is a pointer that points at a pointer
     } else {
-        node4 = &node3.getNeighbor(1); // node4 is a pointer that points at a pointer
+        node4 = nodesIn[node3].getNeighbor(1)->getIndex(); // node4 is a pointer that points at a pointer
     }
 
 
     // calculate distances
     // get the value from the adresses that are pointed to by node1-4
-    float ogDist = *node1.calcDistance(node2) + *node3.calcDistance(node4);
-    float newDist = *node1.calcDistance(node3) + *node2.calcDistance(node4);
+    float ogDist = nodesIn[node1].calcDistance(nodesIn[node2]) +  nodesIn[node3].calcDistance(nodesIn[node4]);
+    float newDist = nodesIn[node1].calcDistance(nodesIn[node3]) + nodesIn[node2].calcDistance(nodesIn[node4]);
     
     // if the new way is shorter, swap egdes
     if(newDist < ogDist){
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-        // HEEEEEEEEEEEEEEEEEEEELLLLLLLLLLLLLLLLLLLLLLPPPPPPPPPPPPPPPPpp
-        // I want to change the objects that gets pointed to by node1-4
-        // HUUUUUUUUUUUUUUR?
-        node1.changeNeigbor(2, node3);
+        nodesIn[node1].changeNeighbor(2, &nodesIn[node3]);
         
-        node2.changeNeigTo(node1, node4);
-        node3.changeNeigTo(node4, node1);
-        node4.changeNeigTo(node3, node2);
+        nodesIn[node2].changeNeigTo(nodesIn[node1], nodesIn[node4]);
+        nodesIn[node3].changeNeigTo(nodesIn[node4], nodesIn[node1]);
+        nodesIn[node4].changeNeigTo(nodesIn[node3], nodesIn[node2]);
         
         // swap was made successfully
         return 1;
