@@ -98,7 +98,7 @@ int main(){
     Node stad3(1.5, 5.4, 2);
     Node stad4(3.6, 3.5, 3);
     Node stad5(1.5, 7.4, 3);
-*/    
+    
     //greedy(towns, towns[0]);
     //clarkeWright(towns);
     //printTour(towns);  
@@ -106,3 +106,4 @@ int main(){
 
     return 0;
 }
+*/
