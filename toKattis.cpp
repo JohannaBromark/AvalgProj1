@@ -70,9 +70,7 @@ int calcTourDist(vector<Node>& tour){
     return totalDist;
 }
 
-
-vector<Node> new2Opt(vector<Node>& cityVector){
-    
+vector<Node> new2Opt(vector<Node>& cityVector){   
     int numLoops = 0;
     int newDistance = -1;
     int bestDistance = calcTourDist(cityVector);
