@@ -177,7 +177,22 @@ void greedy(vector<Node>& towns, Node& currentNode){
     }
 }
 
-
+void printTour(vector<Node>& nodesToPrint){
+    int prevIndex = 0;
+    int indexToPrint = 0;
+    int nextIndex;
+    for (int k = 0; k< nodesToPrint.size(); k++){
+        cout << nodesToPrint[indexToPrint].getIndex() << endl;
+        if (nodesToPrint[indexToPrint].getNeighbor(1)->getIndex() != prevIndex){
+            nextIndex = nodesToPrint[indexToPrint].getNeighbor(1)->getIndex();
+        }
+        else{
+            nextIndex = nodesToPrint[indexToPrint].getNeighbor(2)->getIndex();
+        }
+        prevIndex = indexToPrint;
+        indexToPrint = nextIndex;
+    }
+}
 
 int main(){
     
@@ -185,18 +200,20 @@ int main(){
     cin >> numTowns;
     
     //int numTowns = std::stoi(getline(input));
-    for (int n = 0; n<=numTowns; n++){
-        string line;
-        string line2;
-        cin >> line;
-        cin >> line2;
-        cout << "LIne: " << line <<" Line: " <<line2<< endl;
+    float inputString;
+    float inputString2;
+    
+    vector<Node> towns;
+
+    for(int n = 0; n<(numTowns); n++){
+        cin >> inputString;
+        cin >> inputString2;
+        towns.push_back(Node(inputString, inputString2, n));
     }
-    cout << "Hello world!" << endl;
-
+    
+    greedy(towns, towns[0]);
+    printTour(towns);    
 }
-
-
 
 /*
 int main(){
