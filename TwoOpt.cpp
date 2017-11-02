@@ -20,6 +20,7 @@
 using namespace std;
 
 void twoOpt(std::vector<Node> &nodes){
+    srand (time(NULL));
     int noBetter = 0;
     /*
     if(trySwap(nodes)==0) { 
@@ -47,15 +48,17 @@ void twoOpt(std::vector<Node> &nodes){
 
 int trySwap(std::vector<Node> &nodesIn){   
     //cout << "ts1"<< endl;
-    int const neighDist = nodesIn.size()/10; // only the CPP file creates this.
+    int const neighDist = (nodesIn.size())/2; // only the CPP file creates this.
         
     int numNodes = nodesIn.size();
     // initialize random seed
-    srand (time(NULL));
-    int nodeInd = rand() %  numNodes; // generate number between 1 and numNodes
-    int dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
+    
+    int dist;
+    int nodeInd;
+    nodeInd = rand() %  numNodes; // generate number between 1 and numNodes
+    dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
 
-    cout <<" "<< dist << " "<<nodeInd<< endl;
+    cout <<"Dist: "<< dist << " Nodeind: "<<nodeInd<< endl;
 
     //cout << "ts2"<< endl;
    
@@ -64,23 +67,34 @@ int trySwap(std::vector<Node> &nodesIn){
     int node2 = nodesIn[node1].getNeighbor(2)->getIndex(); // node2 is a pointer that points at a pointer
 
 
+    int node3;
     // Next edge is found by jumping dist forward
-    int node3 = nodesIn[node2].getNeighbor(2)->getIndex();
+    cout << "neigh: " << nodesIn[node2].getNeighbor(2)->getIndex() << endl;
+    cout << "node1: " << node1 << endl;
+    if(nodesIn[node2].getNeighbor(2)->getIndex() != node1){
+        node3 = nodesIn[node2].getNeighbor(2)->getIndex();
+    } else{
+        node3 = nodesIn[node2].getNeighbor(1)->getIndex();
+    }
+    cout << "node3: " << node3 << endl;
+
+    
     int prev = nodesIn[node2].getIndex(); // prev is the value at the address that is pointed to by the pointer node 2
 
     //cout << "ts3"<< endl;
     
 
     for(int a=1; a<dist; a=a+1) {
-        prev = node3; // if prev is equal to the value at the adress that is pointed to by node3
         if(nodesIn[node3].getNeighbor(2)->getIndex() != prev){
             node3 = nodesIn[node3].getNeighbor(2)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         } else {
             node3 = nodesIn[node3].getNeighbor(1)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         }
+        prev = node3; // if prev is equal to the value at the adress that is pointed to by node3
         
     }
-
+    prev = node3; // if prev is equal to the value at the adress that is pointed to by node3
+    
     //cout << "ts4"<< endl;
     
     int node4;
