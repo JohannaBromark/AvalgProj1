@@ -1,13 +1,14 @@
 #include <iostream>
 #include <math.h>
 #include <tuple>
-#include "Node.h"
 #include <vector>
 #include <tuple>
 #include <algorithm>
+#include <string>
+#include "Node.h"
 #include "LinKernighan.h"
 #include "Savings.h"
-#include <string>
+#include "TwoOpt.h"
 
 using namespace std;
 /*
@@ -195,7 +196,7 @@ void printTour(vector<Node>& nodesToPrint){
 }
 
 int main(){
-    
+    cout << "Hello, World! :)" << endl;
     int numTowns;
     cin >> numTowns;
     
@@ -212,6 +213,8 @@ int main(){
     }
     
     greedy(towns, towns[0]);
+    printTour(towns);        
+    twoOpt(towns);
     printTour(towns);    
 }
 
