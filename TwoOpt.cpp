@@ -25,8 +25,8 @@ int trySwap(std::vector<Node> &nodesIn){
 
 
     // First edge is choosen at random  
-    node1 = &nodesIn.at(nodeInd);  // node1 is a pointer that points at a pointer
-    node2 = &node1.getNeighbor(2); // node2 is a pointer that points at a pointer
+    Node& node1 = nodesIn.at(nodeInd);  // node1 is a pointer that points at a pointer
+    Node& node2 = node1.getNeighbor(2); // node2 is a pointer that points at a pointer
 
 
     // Next edge is found by jumping dist forward
