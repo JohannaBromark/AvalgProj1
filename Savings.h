@@ -14,6 +14,7 @@ public:
     std::tuple<Node&, Node&> getNodes() const;
     bool operator < (Savings& otherSave);
     bool operator > (Savings& otherSave);
+    bool operator = (const Savings& otherSave);
     float getSave()const;
     Node& getHub() const;
 private:

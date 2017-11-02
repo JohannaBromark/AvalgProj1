@@ -14,6 +14,7 @@ class Node {
         bool operator==(Node& other);		
         int getIndex();
         void addNeighbor(Node *newNeighbor);
+        void addNeighborCW(Node *newNeighbor);
         bool isConnectedToHub();
         bool isOnlyConnectedToHub();
         void connectToHub(Node *hubNode);
@@ -23,6 +24,7 @@ class Node {
         int getNeighborInd(Node& neighbor);
         bool hasNeighbor(Node& posNeighbor);
         bool isVisited();
+        float calcTotDistance();
 
     private:
         float x, y;
