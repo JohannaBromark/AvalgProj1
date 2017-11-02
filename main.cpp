@@ -94,8 +94,27 @@ int main(){
     vector<Node> newTour= new2Opt(towns);
 
     //cout << "-----------------------"<<endl;
+    
+    greedy(towns);
+    printTour(towns);        
+    twoOpt(towns);
+    printTour(towns);    
+}
+
+/*
+    
+    Node stad1(2.3, 4.3, 0);
+    Node stad2(1.0, 2.4, 1);
+    Node stad3(1.5, 5.4, 2);
+    Node stad4(3.6, 3.5, 3);
+    Node stad5(1.5, 7.4, 3);
+    
+    //greedy(towns, towns[0]);
+    clarkeWright(towns);
+    printTour(towns);  
+    cout << calcTour(towns) << endl; 
 
     for (int i = 0; i<numTowns; i++){
         cout << newTour[i].getIndex() << endl;
     }
-}
+}*/
