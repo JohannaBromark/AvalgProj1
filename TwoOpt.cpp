@@ -11,19 +11,40 @@
 using namespace std;
 
 void twoOpt(std::vector<Node> &nodes){
-    int const neighDist = 10; // only the CPP file creates this.
-    trySwap(nodes);
+    int noBetter = 0;
+    /*
+    if(trySwap(nodes)==0) {
+        cout << "tryswap == 0" << endl;
+
+    }else{
+        cout << "tryswap == 1" << endl;
+    }
+    ;
+    */
+    while(noBetter<100){
+        cout << "while!" << noBetter <<endl;
+        if (trySwap(nodes)==0){
+            cout << "tryswap == 0" << endl;            
+            noBetter ++;
+        }
+        else{
+            cout << "tryswap == 1" << endl;
+        }
+    }
+    
     
 
 }
 
-int trySwap(std::vector<Node> &nodesIn){
+int trySwap(std::vector<Node> &nodesIn){   
+    int const neighDist = 10; // only the CPP file creates this.
+        
     int numNodes = nodesIn.size();
     // srand (time(0)); // initialize random seed
-    int nodeInd = rand() %  numNodes + 1; // generate number between 1 and numNodes
+    int nodeInd = rand() %  numNodes; // generate number between 1 and numNodes
     int dist = rand() %  neighDist + 1; // generate number between 1 and neighDist
 
-
+   
     // First edge is choosen at random  
     int node1 = nodeInd;  // node1 is a pointer that points at a pointer
     int node2 = nodesIn[node1].getNeighbor(2)->getIndex(); // node2 is a pointer that points at a pointer
@@ -41,8 +62,9 @@ int trySwap(std::vector<Node> &nodesIn){
         } else {
             node3 = nodesIn[node3].getNeighbor(1)->getIndex(); // node 3 is now the pointer that points at the address where a node that has a neigbor is
         }
-        cout << nodesIn[node3].getIndex() << endl;
+        
     }
+
     int node4;
     // Edge from node3 to node4 is not to "go back"
     if(nodesIn[node3].getNeighbor(2)->getIndex() != prev){
