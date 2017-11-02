@@ -1,7 +1,7 @@
 #include <iostream>
 //#include <math.h>
 //#include <tuple>
-#include "Node.h"
+//#include "Node.h"
 #include <vector>
 //#include <tuple>
 //#include <algorithm>
@@ -88,13 +88,13 @@ int main(){
     //int numTowns = std::stoi(getline(input));
     long double inputString;
     long double inputString2;
-    vector<Node> towns;
+    vector<Vertix> towns;
 
     for(int n = 0; n<(numTowns); n++){
         cin >> inputString;
         cin >> inputString2;
-        cout << inputString << " "<< inputString2 <<" " << n << endl;
-        towns.push_back(Node(inputString, inputString2, n));
+        //cout << inputString << " "<< inputString2 <<" " << n << endl;
+        towns.push_back(Vertix(inputString, inputString2, n));
     }
 /*
     

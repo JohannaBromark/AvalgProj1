@@ -5,6 +5,7 @@
 #include "Christofides.h"
 #include <set>
 #include <unordered_set>
+#include <algorithm>
 
 int compareEdge(const void *s1, const void *s2) {
     struct EdgeK *e1 = (struct EdgeK *) s1;
@@ -12,28 +13,24 @@ int compareEdge(const void *s1, const void *s2) {
     return int(e1->weight - e2->weight);
 }
 
-Christofides::Christofides(std::vector<Node>& citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
+Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
     //std::cout << "Initerar" << std::endl;
     fullGraph.v = (int) cities.size();
-    //std::cout << "initialsize "<<fullGraph.v;
-    fullGraph.e = fullGraph.v * (fullGraph.v-1)/2;
+    fullGraph.e = (fullGraph.v * (fullGraph.v - 1)) / 2;
     fullGraph.edges = new EdgeK[fullGraph.e];
+    kruskalGraph.v = cities.size();
+    kruskalGraph.e = fullGraph.v - 1;
+    kruskalGraph.edges = new EdgeK[fullGraph.v - 1];
+
     addEdges();
-    struct EdgeK result[fullGraph.v - 1];
-    kruskal(result);
-
+    kruskal();
     std::vector<std::list<int>> verticesAdjacency(cities.size());
-
-    perfectMatching(result, verticesAdjacency);
+    perfectMatching(verticesAdjacency);
     hierholzer(verticesAdjacency);
-    printTour(eulerTour);
-    std::cout << "\n"<< "\n" << std::endl;
-    //Remove duplicates
     std::unordered_set<int> s;
     eulerTour.remove_if([&](int n) {
         return (s.find(n) == s.end()) ? (s.insert(n), false) : true;
     });
-    //std::cout << "Klar!" << std::endl;
     printTour(eulerTour);
 }
 
@@ -48,34 +45,35 @@ void Christofides::addEdges(){
             fullGraph.edges[counter].weight = cities.at(i).calcDistance(cities.at(j));
             counter++;
         }
-        counter++;
     }
 }
 
-void Christofides::kruskal(struct EdgeK result[]){
+void Christofides::kruskal(){
     //Create minimal spanning tree through Kruskal's algorithm
     //std::cout << "Kruskal" << std::endl;
 
     std::qsort(fullGraph.edges, fullGraph.e, sizeof(struct EdgeK), compareEdge);
 
-    int i, n;
-    for (i = n = 0; i < fullGraph.e && n < fullGraph.v - 1; i++) {
-        int u = fullGraph.edges[i].from; int v = fullGraph.edges[i].to;
+    int i;
+    int n = 0;
+    for (i = 0; i < fullGraph.e && (n < kruskalGraph.e); i++) { //&& n < fullGraph.v - 1
+        int u = fullGraph.edges[i].from;
+        int v = fullGraph.edges[i].to;
+
         if (nodeSets.findParent(u) != nodeSets.findParent(v)) {
-            result[n] = fullGraph.edges[i];
+            kruskalGraph.edges[n] = fullGraph.edges[i];
             nodeSets.addDegree(u);
             nodeSets.addDegree(v);
             n++;
             nodeSets.unite(v, u);
         }
     }
-    //std::cout << "Result at pos 3 " << result[3].from << std::endl;
+
 }
 
-void Christofides::perfectMatching(struct EdgeK edgesIn[], std::vector<std::list<int>>& verticesAdjacency) {
+void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacency) {
     //std::cout << "Perfect Matching" << std::endl;
     //Does not produce minimal perfect matching --> could be improved.
-
     std::vector<int> unevenVset = nodeSets.generateUnevenVset();
     int nUnevenV = unevenVset.size();
 
@@ -83,8 +81,8 @@ void Christofides::perfectMatching(struct EdgeK edgesIn[], std::vector<std::list
     int n = (int) nUnevenV * (nUnevenV - 1) / 2;
 
     struct EdgeK edges[n];
-    for (counter = i = 0; i < nUnevenV-1; i++) {
-        for (int j = i + 1; j < nUnevenV; j++) {
+    for (counter = i = 0; i < nUnevenV-1 && counter < n; i++) {
+        for (int j = i + 1; j < nUnevenV && counter < n; j++) {
             edges[counter].from = unevenVset.at(i);
             edges[counter].to = unevenVset.at(j);
             edges[counter].weight = cities.at(edges[counter].from).calcDistance(cities.at(edges[counter].to));
@@ -93,7 +91,7 @@ void Christofides::perfectMatching(struct EdgeK edgesIn[], std::vector<std::list
     }
 
     std::set<int> usedNodes;
-    newGraph.v = fullGraph.v; newGraph.e = nUnevenV / 2 + fullGraph.v - 1;
+    newGraph.v = fullGraph.v; newGraph.e = kruskalGraph.e + nUnevenV; //Not correct but testing...
     newGraph.edges = new EdgeK[newGraph.e];
 
     std::qsort(edges, n, sizeof(struct EdgeK), compareEdge);
@@ -110,19 +108,21 @@ void Christofides::perfectMatching(struct EdgeK edgesIn[], std::vector<std::list
             counter++;
         }
     }
-
     for (int e = 0; e < (fullGraph.v - 1); e++) {
-        newGraph.edges[e] = edgesIn[e];
-        verticesAdjacency.at(edgesIn[e].from).emplace_back(edgesIn[e].to);
+        newGraph.edges[e] = kruskalGraph.edges[e];
+
+        verticesAdjacency.at(kruskalGraph.edges[e].from).emplace_back(kruskalGraph.edges[e].to);
         //std::cout << "Vertix " << edgesIn[e].from << " adjacent to: " << verticesAdjacency.at(edgesIn[e].from).front() << std::endl;
-        verticesAdjacency.at(edgesIn[e].to).emplace_back(edgesIn[e].from);
+        verticesAdjacency.at(kruskalGraph.edges[e].to).emplace_back(kruskalGraph.edges[e].from);
     }
+
+
 
     //std::cout << "Vertices adjacency for 0 at end of perfect " << verticesAdjacency.at(0).front() << std::endl;
 
 }
 
-void Christofides::hierholzer(std::vector<std::list<int>> verticesAdjacency) {
+void Christofides::hierholzer(std::vector<std::list<int>>& verticesAdjacency) {
    //std::cout << "Hierholzer with edges " << newGraph.e << std::endl;
 
     int start = 0;
@@ -162,15 +162,10 @@ void Christofides::hierholzer(std::vector<std::list<int>> verticesAdjacency) {
 }
 
 void Christofides::printTour(std::list<int> inList) {
-    /*for (int i : inList) {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
-    */
     std::cout << eulerTour.front();
-    auto iter = eulerTour.begin();
-    iter++;
-    for(iter; iter != eulerTour.end(); iter++){
-        std::cout << "\n" << *iter;
+    for (int i : eulerTour) {
+        if (i != eulerTour.front()) {
+            std::cout << "\n" << i;
+        }
     }
 }
