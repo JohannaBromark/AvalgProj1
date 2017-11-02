@@ -19,7 +19,7 @@ std::tuple<Node&, Node&> Savings::getNodes() const{
 Node& Savings::getHub()const{
     return hub;
 }
-/*
+
 bool Savings::operator<(Savings& otherSave){
     return saving < otherSave.getSave();
 }
@@ -27,7 +27,10 @@ bool Savings::operator<(Savings& otherSave){
 bool Savings::operator>(Savings& otherSave){
     return saving > otherSave.getSave();
 }
-*/
+
+bool Savings::operator =(const Savings& otherSave){
+    return saving = otherSave.getSave();
+}
 
 float Savings::getSave()const{
     return saving;

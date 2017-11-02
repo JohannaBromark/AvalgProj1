@@ -25,8 +25,8 @@ using namespace std;
     bool Node::operator== (Node& other) {
         return index == other.getIndex();
     }
-/*
-    void Node::addNeighbor(Node *newNeighbor){
+
+    void Node::addNeighborCW(Node *newNeighbor){
         if (twoCon2Hub){
             neighbor1 = newNeighbor;
             twoCon2Hub = false;
@@ -36,7 +36,6 @@ using namespace std;
             oneCon2Hub = false;
         }
     }
-*/
 
     void Node::addNeighbor(Node* newNeighbor){
         if (neighbor1 == 0){
@@ -47,8 +46,6 @@ using namespace std;
             neighbor2 = newNeighbor;
         }
     }
-
-
 
     bool Node::isConnectedToHub(){
         //A node is connected to hub iff it has at least one connection to the hub. 
@@ -116,5 +113,17 @@ using namespace std;
     bool Node::isVisited(){
         return visited;
     }
-    
+
+    float Node::calcTotDistance(){
+        if (neighbor2 != 0){
+            return calcDistance(*neighbor1) + calcDistance(*neighbor2);
+        }
+        else if (neighbor1 != 0){
+            return calcDistance(*neighbor1);
+        }
+        else{
+            return 0;
+        }
+        
+    }
 
