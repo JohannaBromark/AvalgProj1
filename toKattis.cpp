@@ -180,38 +180,36 @@ void new2HOpt(vector<Town>& cityVector){
     }
 }
 
-void randomOpt(vector<Town> cityVector){
-    int numCities = cityVector.size();
+void randomOpt(vector<Town> &cityVector){
+    int numCities = (cityVector).size();
     int city1;
     int city2;
-    int currentDistance;
-    int newDistance;
-    int numLoops = 1000;
+    int city3;
+    int city4;
+    int currentTourDistance;
+    int newTourDistance;
+    int numLoops = 2;
+    vector<Town> newTour;
 
     while (numLoops > 0){
         city1 = rand() % numCities;
         city2 = rand() % (numCities-city1) +city1;
-        
-        currentDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city1, numCities)]) + 
-        cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
-        
-        newDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city2, numCities)]) + 
-        cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
-
-        if (newDistance < currentDistance){
-            for (Town ver : cityVector) {
-                cout << ver.index << endl;
-            }
-            
-            cityVector = changeTour(city1, city2, &cityVector);
-            for (Town ver : cityVector) {
-                cout << ver.index << endl;
-            }
+        city3 = rand() % numCities;
+        city4 = rand() % (numCities-city3) +city3;
+             
+        newTour = changeTour(city1, city2, &cityVector);
+        newTour = changeTour(city3, city4, &newTour);
+        new2Opt(newTour);
+        new2HOpt(newTour);
+        newTourDistance = calcTourDist(newTour);
+        currentTourDistance = calcTourDist(newTour);
+        if (newTourDistance < currentTourDistance){
+            cityVector = newTour;
         }
+
         numLoops --;
     }
 }
-
 
 int main(){
     srand(time(NULL));
@@ -231,12 +229,14 @@ int main(){
     greedy(towns);
 
     if (numTowns > 1) {
-        randomOpt(towns);
+        new2Opt(towns);      
+        new2HOpt(towns);
         new2Opt(towns);      
         new2HOpt(towns);
         
+        //randomOpt(towns);
         
-    
+        
         for (Town ver : towns) {
             cout << ver.index << endl;
         }
