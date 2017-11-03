@@ -18,6 +18,7 @@ Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nod
     fullGraph.v = (int) cities.size();
     if (fullGraph.v == 1) {
         std::cout << cities.front().index << std::endl;
+        citiesOut.push_back(Node(cities.at(0).x, cities.at(0).y, cities.at(0).index));
         return;
     }
     fullGraph.e = (fullGraph.v * (fullGraph.v - 1)) / 2;
@@ -37,7 +38,12 @@ Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nod
     eulerTour.remove_if([&](int n) {
         return (s.find(n) == s.end()) ? (s.insert(n), false) : true;
     });
-    printTour(eulerTour);
+
+    for (int i : eulerTour) {
+        citiesOut.push_back( Node (cities.at(i).x, cities.at(i).y, cities.at(i).index) );
+    }
+    //printTour(eulerTour);
+    //std::cout << "Slut på min" << std::endl;
 }
 
 void Christofides::addEdges(){

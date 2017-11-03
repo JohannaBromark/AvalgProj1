@@ -5,7 +5,7 @@
 #ifndef AVALGPROJ1_CHRISTOFIDES_H
 #define AVALGPROJ1_CHRISTOFIDES_H
 #include <iostream>
-//#include "Node.h"
+#include "Node.h"
 #include <vector>
 #include <list>
 #include <math.h>
@@ -106,6 +106,7 @@ public:
     std::list<int> eulerTour;
     explicit Christofides(std::vector<Vertix> cities);
     void printTour(std::list<int> inList);
+    std::vector<Node> citiesOut;
 private:
     void kruskal(); //Find minimum spanning tree
     void perfectMatching(std::vector<std::list<int>>& verticesAdjacency);
