@@ -1,48 +1,43 @@
 #include <iostream>
-//#include <math.h>
-//#include <tuple>
-//#include "Node.h"
+#include <math.h>
+#include <tuple>
 #include <vector>
-//#include <tuple>
-//#include <algorithm>
-//#include "clarkeWright.h"
-//#include "LinKernighan.h"
-//#include "Savings.h"
-//#include <string>
-#include "Christofides.h"
+#include <tuple>
+#include <algorithm>
+#include <string>
+#include "Node.h"
+#include "clarkeWright.h"
+#include "LinKernighan.h"
+#include "Savings.h"
+#include "TwoOpt.h"
+#include "new2Opt.h"
 
 using namespace std;
-/*
-void greedy(vector<Node>& towns, Node& currentNode){
-    float minDistance = -1.0;
-    float distance; 
-    int closestNeighIndex = 0;
-    //cout << "Current Node: " << currentNode.getIndex() << endl;
-    for(int i = 0; i<towns.size(); i++){
-        
-        if (currentNode.getIndex() != towns[i].getIndex()){
-            distance = currentNode.calcDistance(towns[i]);
-            //cout << "räknar avstånd: " <<distance << endl;
 
-            //cout << (distance<minDistance) << (minDistance <0.0) << endl;
-
-            //cout << currentNode.hasNeighbor(towns[i])<<endl;
-            //cout << towns[i].isVisited() <<endl;
-            if ((distance<minDistance || minDistance<0) && !currentNode.hasNeighbor(towns[i]) && !towns[i].isVisited()){
-                //cout << "ändrar avstånd" << endl;
-                minDistance = distance; 
-                closestNeighIndex = towns[i].getIndex();
+void greedy(vector<Node>& towns){
+    int minDistance = -1;
+    int distance; 
+    int currentBestIndex;
+    
+    for(int i = 0; i < towns.size()-1; i++){
+        minDistance = -1;
+        for (int j = i+1; j < towns.size(); j++){
+            distance = round(towns[i].calcDistance(towns[j]));
+            if (minDistance < 0 || distance < minDistance){
+                currentBestIndex = j;
+                //cout << "best index " << j << endl;
+                minDistance = distance;
             }
         }
-    }
-    currentNode.addNeighbor(&towns[closestNeighIndex]);
-    towns[closestNeighIndex].addNeighbor(&currentNode);
-    if (closestNeighIndex != 0){
-        greedy(towns, towns[closestNeighIndex]);
-    }
-    else {
-        currentNode.addNeighbor(&towns[0]);
-        towns[0].addNeighbor(&currentNode);
+        //cout << "ändrar i listan" << endl;
+        Node moveForward = towns[currentBestIndex];
+        Node moveBackward = towns[i+1];
+        
+        //cout << "flyttar nod " << moveForward.getIndex() << "Till pos: " << i+1 << endl;
+        //cout << "flyttar nod " << moveBackward.getIndex() << "Till pos: " << currentBestIndex << endl;
+
+        towns[i+1] = moveForward;
+        towns[currentBestIndex] = moveBackward;   
     }
 }
 
@@ -71,31 +66,41 @@ float calcTour(vector<Node>& nodeInRoute){
     return totTour/2;
 }
 
-
-float calcTour2(vector<Node>& nodes) {
-    float dist = 0.0;
-    for (int i = 0; i < nodes.size() - 1; i++) {
-        dist += nodes.at(i).calcDistance(nodes.at(i+1));
-    }
-    dist += nodes.at(0).calcDistance(nodes.at(nodes.size()-1));
-    return dist;
-}*/
 int main(){
-
+    cout << "Hello, World! :)" << endl;
     int numTowns;
     cin >> numTowns;
-    
+    float afloat = 1.6;
+    int aint = round(afloat);
+
+    //cout << "float: " << afloat << "int: " << aint << endl;
+
     //int numTowns = std::stoi(getline(input));
-    long double inputString;
-    long double inputString2;
-    vector<Vertix> towns;
+    float inputString;
+    float inputString2;
+    vector<Node> towns;
 
     for(int n = 0; n<(numTowns); n++){
         cin >> inputString;
         cin >> inputString2;
-        //cout << inputString << " "<< inputString2 <<" " << n << endl;
-        towns.push_back(Vertix(inputString, inputString2, n));
+        towns.push_back(Node(inputString, inputString2, n));
     }
+    greedy(towns);
+/*
+    for (int i = 0; i<numTowns; i++){
+        cout << towns[i].getIndex() << endl;
+    }
+*/
+    vector<Node> newTour= new2Opt(towns);
+
+    //cout << "-----------------------"<<endl;
+    
+    greedy(towns);
+    printTour(towns);        
+    twoOpt(towns);
+    printTour(towns);    
+}
+
 /*
     
     Node stad1(2.3, 4.3, 0);
@@ -103,24 +108,13 @@ int main(){
     Node stad3(1.5, 5.4, 2);
     Node stad4(3.6, 3.5, 3);
     Node stad5(1.5, 7.4, 3);
-*/
+    
     //greedy(towns, towns[0]);
-    //clarkeWright(towns);
-    //printTour(towns);
-    //cout << calcTour(towns) << endl;
+    clarkeWright(towns);
+    printTour(towns);  
+    cout << calcTour(towns) << endl; 
 
-    Christofides testChristofides = Christofides(towns);
-    /*vector<Node> townsInOrder;
-    townsInOrder.push_back(towns.at(0));
-    townsInOrder.push_back(towns.at(8));
-    townsInOrder.push_back(towns.at(4));
-    townsInOrder.push_back(towns.at(9));
-    townsInOrder.push_back(towns.at(2));
-    townsInOrder.push_back(towns.at(6));
-    townsInOrder.push_back(towns.at(1));
-    townsInOrder.push_back(towns.at(7));
-    cout << calcTour2(townsInOrder)<< endl;*/
-
-
-    return 0;
-}
+    for (int i = 0; i<numTowns; i++){
+        cout << newTour[i].getIndex() << endl;
+    }
+}*/

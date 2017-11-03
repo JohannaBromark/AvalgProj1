@@ -128,3 +128,7 @@ using namespace std;
         
     }
 
+    void Node::setIsVisited(){
+        visited = true;
+    }
+

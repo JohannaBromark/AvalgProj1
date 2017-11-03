@@ -25,6 +25,7 @@ class Node {
         bool hasNeighbor(Node& posNeighbor);
         bool isVisited();
         float calcTotDistance();
+        void setIsVisited();
 
     private:
         float x, y;
