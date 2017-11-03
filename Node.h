@@ -10,9 +10,11 @@ class Node {
     public:
         Node(double x, double y, int index);
         int calcDistance (Node& otherCity);
-        std::tuple<float, float> getXY();
-        bool operator==(Node& other);		
         int getIndex();
+        std::tuple<float, float> getXY();
+        /*
+        
+        bool operator==(Node& other);		
         void addNeighbor(Node *newNeighbor);
         void addNeighborCW(Node *newNeighbor);
         bool isConnectedToHub();
@@ -26,15 +28,17 @@ class Node {
         bool isVisited();
         float calcTotDistance();
         void setIsVisited();
+        */
 
     private:
         float x, y;
         int index;
+        /*
         Node *neighbor1;
         Node *neighbor2;
         bool oneCon2Hub;
         bool twoCon2Hub;
-        bool visited;
+        bool visited;*/
 };
 
 #endif //_Node_h

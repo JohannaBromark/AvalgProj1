@@ -6,11 +6,11 @@ using namespace std;
         x = xIn; y = yIn; index = indexIn;
         //twoCon2Hub = false;
         //oneCon2Hub = false;
-        neighbor1 = NULL;
-        neighbor2 = NULL;
-        visited = false;
+        //neighbor1 = NULL;
+        //neighbor2 = NULL;
+        //visited = false;
     }
-
+    
     tuple<float, float> Node::getXY() {
         return std::make_tuple(x, y);
     };
@@ -23,6 +23,8 @@ using namespace std;
         return index;
     }
 
+    
+    /*
     bool Node::operator== (Node& other) {
         return index == other.getIndex();
     }
@@ -132,3 +134,4 @@ using namespace std;
         visited = true;
     }
 
+*/

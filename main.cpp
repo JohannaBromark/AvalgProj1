@@ -6,31 +6,37 @@
 
 using namespace std;
 
+
+
 int main(){
-    int numTowns;
-    cin >> numTowns;
+    int numNodes;
+    cin >> numNodes;
     float afloat = 1.6;
     int aint = round(afloat);
 
     //cout << "float: " << afloat << "int: " << aint << endl;
 
-    //int numTowns = std::stoi(getline(input));
+    //int numNodes = std::stoi(getline(input));
     float inputString;
     float inputString2;
-    vector<Vertix> towns;
+    vector<Vertix> Nodes;
 
-    for(int n = 0; n<(numTowns); n++){
+    for(int n = 0; n<(numNodes); n++){
         cin >> inputString;
         cin >> inputString2;
-        towns.push_back(Vertix(inputString, inputString2, n));
+        Nodes.push_back(Vertix(inputString, inputString2, n));
     }
 
-    Christofides test = Christofides(towns);
-    if (test.citiesOut.size() > 1) {
-        vector<Node> finalTour = new2Opt(test.citiesOut);
+    Christofides test = Christofides(Nodes);
+    vector<Node> tour = test.citiesOut;
+    
+    if (tour.size() > 1) {
+        new2Opt(tour);
+        new2HOpt(tour);
 
-    for (Node node : finalTour) {
+
+    for (Node node : tour) {
         cout << node.getIndex() << endl;
-    };
+    }
     }
 }
