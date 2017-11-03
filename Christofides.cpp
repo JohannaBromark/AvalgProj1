@@ -13,20 +13,26 @@ int compareEdge(const void *s1, const void *s2) {
     return int(e1->weight - e2->weight);
 }
 
-Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nodeSets(citiesIn.size()) {
+Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nodeSets(cities.size()) {
     //std::cout << "Initerar" << std::endl;
     fullGraph.v = (int) cities.size();
+    if (fullGraph.v == 1) {
+        std::cout << cities.front().index << std::endl;
+        return;
+    }
     fullGraph.e = (fullGraph.v * (fullGraph.v - 1)) / 2;
     fullGraph.edges = new EdgeK[fullGraph.e];
-    kruskalGraph.v = cities.size();
+    kruskalGraph.v = (int) cities.size();
     kruskalGraph.e = fullGraph.v - 1;
     kruskalGraph.edges = new EdgeK[fullGraph.v - 1];
 
     addEdges();
     kruskal();
+
     std::vector<std::list<int>> verticesAdjacency(cities.size());
     perfectMatching(verticesAdjacency);
     hierholzer(verticesAdjacency);
+
     std::unordered_set<int> s;
     eulerTour.remove_if([&](int n) {
         return (s.find(n) == s.end()) ? (s.insert(n), false) : true;
@@ -46,6 +52,7 @@ void Christofides::addEdges(){
             counter++;
         }
     }
+    fullGraph.e = counter;
 }
 
 void Christofides::kruskal(){
@@ -53,10 +60,9 @@ void Christofides::kruskal(){
     //std::cout << "Kruskal" << std::endl;
 
     std::qsort(fullGraph.edges, fullGraph.e, sizeof(struct EdgeK), compareEdge);
-
     int i;
     int n = 0;
-    for (i = 0; i < fullGraph.e && (n < kruskalGraph.e); i++) { //&& n < fullGraph.v - 1
+    for (i = 0; i < fullGraph.e && n < kruskalGraph.e; i++) { //&& n < fullGraph.v - 1
         int u = fullGraph.edges[i].from;
         int v = fullGraph.edges[i].to;
 
@@ -81,7 +87,8 @@ void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacenc
     int n = (int) nUnevenV * (nUnevenV - 1) / 2;
 
     struct EdgeK edges[n];
-    for (counter = i = 0; i < nUnevenV-1 && counter < n; i++) {
+    counter = 0;
+    for (i = 0; i < nUnevenV - 1 && counter < n; i++) {
         for (int j = i + 1; j < nUnevenV && counter < n; j++) {
             edges[counter].from = unevenVset.at(i);
             edges[counter].to = unevenVset.at(j);
@@ -91,35 +98,23 @@ void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacenc
     }
 
     std::set<int> usedNodes;
-    newGraph.v = fullGraph.v; newGraph.e = kruskalGraph.e + nUnevenV; //Not correct but testing...
-    newGraph.edges = new EdgeK[newGraph.e];
 
     std::qsort(edges, n, sizeof(struct EdgeK), compareEdge);
     counter = 0;
-    for (i = 0; (i < n) && (counter < nUnevenV/2); i++) {
+    for (i = 0; (i < n) && (counter < nUnevenV / 2); i++) {
         if ( (usedNodes.count(edges[i].from) == 0) && (usedNodes.count(edges[i].to) == 0) ){
-            //std::cout << "counter is " << counter << " limit for counter " << nUnevenV/2 << std::endl;
-
             usedNodes.insert(edges[i].from);
             usedNodes.insert(edges[i].to);
-            newGraph.edges[newGraph.e - 1 - counter] = edges[i];
             verticesAdjacency.at(edges[i].from).emplace_back(edges[i].to);
             verticesAdjacency.at(edges[i].to).emplace_back(edges[i].from);
             counter++;
         }
     }
-    for (int e = 0; e < (fullGraph.v - 1); e++) {
-        newGraph.edges[e] = kruskalGraph.edges[e];
-
+    for (int e = 0; e < kruskalGraph.e; e++) {
         verticesAdjacency.at(kruskalGraph.edges[e].from).emplace_back(kruskalGraph.edges[e].to);
         //std::cout << "Vertix " << edgesIn[e].from << " adjacent to: " << verticesAdjacency.at(edgesIn[e].from).front() << std::endl;
         verticesAdjacency.at(kruskalGraph.edges[e].to).emplace_back(kruskalGraph.edges[e].from);
     }
-
-
-
-    //std::cout << "Vertices adjacency for 0 at end of perfect " << verticesAdjacency.at(0).front() << std::endl;
-
 }
 
 void Christofides::hierholzer(std::vector<std::list<int>>& verticesAdjacency) {
@@ -158,7 +153,6 @@ void Christofides::hierholzer(std::vector<std::list<int>>& verticesAdjacency) {
             }
         }
     }
-    //std::cout << std::endl;
 }
 
 void Christofides::printTour(std::list<int> inList) {
@@ -168,4 +162,5 @@ void Christofides::printTour(std::list<int> inList) {
             std::cout << "\n" << i;
         }
     }
+
 }

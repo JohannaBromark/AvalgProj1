@@ -11,8 +11,8 @@
 #include <math.h>
 
 struct EdgeK {
-    int to = -1;
-    int from = -1;
+    int to = 0;
+    int from = 0;
     double weight;
 };
 
@@ -69,7 +69,9 @@ public:
     }
 
     void addDegree(int vertix) {
-        degree[vertix] += 1;
+        if (vertix < n) {
+            degree[vertix] += 1;
+        }
     }
 
     void unite(int x, int y) {
@@ -110,9 +112,8 @@ private:
     void hierholzer(std::vector<std::list<int>>& verticesAdjacency); //Find eulerian tour
     void addEdges();
     std::vector<Vertix>& cities;
-    Graph fullGraph, newGraph, kruskalGraph;
+    Graph fullGraph, kruskalGraph;
     Sets nodeSets;
-
 };
 
 
