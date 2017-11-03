@@ -21,8 +21,9 @@ vector<Node> new2Opt(vector<Node>& cityVector){
     vector<Node> currentTour = cityVector;
     //cout << "antalet noder in: " << numCities;
     //cout << "längd på tour i början: " << currentTour.size();
+    bool find = true;
 
-    while (numLoops < 50){
+    while (find){
         for (int city1 = 0; city1 < numCities; city1++){
             for (int city2 = city1+1; city2 < numCities; city2 ++){
                 
@@ -37,9 +38,11 @@ vector<Node> new2Opt(vector<Node>& cityVector){
                     //cout << "innne i iffen" << endl;
                     bestDistance = newDistance;
                     currentTour = newTour;
-                    numLoops = 0;
+                    find = true;
                 }
-                numLoops++; 
+                else{
+                    find = false;
+                }
             }
         }
     }
