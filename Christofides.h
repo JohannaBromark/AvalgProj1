@@ -7,10 +7,13 @@
 #include <iostream>
 #include "Node.h"
 #include <vector>
+#include <list>
+#include <math.h>
 
 struct EdgeK {
-    int to, from;
-    float weight;
+    int to = 0;
+    int from = 0;
+    double weight;
 };
 
 struct Graph {
@@ -19,8 +22,24 @@ struct Graph {
 };
 
 struct Vertix {
-    float x, y;
-    int degree;
+    double x, y;
+    int index;
+
+    Vertix(double xIn, double yIn, int indexIn) {
+        x = xIn; y = yIn; index = indexIn;
+    }
+
+    int calcDistance(Vertix other) {
+        return (int) sqrt(pow( ( x - other.getX() ), 2 ) + pow( ( y - other.getY() ), 2 ));
+    }
+
+    double getX(){
+        return x;
+    }
+
+    double getY(){
+        return y;
+    }
 };
 
 class Sets {
@@ -50,7 +69,9 @@ public:
     }
 
     void addDegree(int vertix) {
-        degree[vertix] += 1;
+        if (vertix < n) {
+            degree[vertix] += 1;
+        }
     }
 
     void unite(int x, int y) {
@@ -58,15 +79,19 @@ public:
         int yParent = findParent(y);
         if (xParent == yParent) return;
         else if (ranks[xParent] < ranks[yParent]) {
-            parents[x] = parents[y]; ranks[y] += ranks[x];
+            parents[xParent] = yParent;
+            ranks[y] += ranks[x];
         }
         else {
-            parents[y] = parents[x]; ranks[x] += ranks[y];
+            parents[yParent] = xParent;
+            ranks[x] += ranks[y];
         }
     }
 
     int findParent(int x) {
-        if (parents[x] == x) return x;
+        if (parents[x] == x) {
+            return x;
+        }
         else {
             return findParent(parents[x]);
         }
@@ -76,17 +101,20 @@ public:
 
 
 class Christofides {
-    explicit Christofides(std::vector<Node>& cities);
+
+public:
+    std::list<int> eulerTour;
+    explicit Christofides(std::vector<Vertix> cities);
+    void printTour(std::list<int> inList);
+    std::vector<Node> citiesOut;
 private:
     void kruskal(); //Find minimum spanning tree
-    void createUnevenVset();
-    Graph perfectMatching();
-    void hierholzer(); //Find eulerian tour
+    void perfectMatching(std::vector<std::list<int>>& verticesAdjacency);
+    void hierholzer(std::vector<std::list<int>>& verticesAdjacency); //Find eulerian tour
     void addEdges();
-    std::vector<Node>& cities;
-    Graph fullGraph, newGraph;
+    std::vector<Vertix>& cities;
+    Graph fullGraph, kruskalGraph;
     Sets nodeSets;
-
 };
 
 

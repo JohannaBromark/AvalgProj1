@@ -17,7 +17,7 @@ float Edge::getDistance() const{
 }
 
 Node& Edge::getNode(int index) const {
-    if (index == 2) {
+    if (index == 1) {
         return *node2;
     }
     else {

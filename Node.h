@@ -8,8 +8,8 @@
 class Node { 
 
     public:
-        Node(float x, float y, int index);
-        float calcDistance (Node& otherCity);        
+        Node(double x, double y, int index);
+        int calcDistance (Node& otherCity);
         std::tuple<float, float> getXY();
         bool operator==(Node& other);		
         int getIndex();
