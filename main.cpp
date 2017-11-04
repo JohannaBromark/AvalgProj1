@@ -5,10 +5,10 @@
 #include <ctime>
 #include <algorithm>
 #include <limits>
-#include "Christofides.h"
+//#include "Christofides.h"
 
 using namespace std;
-/*
+
 struct Town {
     double x, y;
     int index;
@@ -18,7 +18,7 @@ struct Town {
     }
 
     int calcDistance(Town *other) {
-        return (int) sqrt(pow( ( x - (*other).getX() ), 2 ) + pow( ( y - (*other).getY() ), 2 ));
+        return round(sqrt(pow( ( x - (*other).getX() ), 2 ) + pow( ( y - (*other).getY() ), 2 )));
     }
 
     double getX(){
@@ -29,33 +29,24 @@ struct Town {
         return y;
     }
 };
-*/
+
 void greedy(vector<Town>& towns){
-    int minDistance = -1;
+    int minDistance;
     int distance; 
     int currentBestIndex;
     
     for(int i = 0; i < towns.size()-1; i++){
-        minDistance = -1;
-        for (int j = i+1; j < towns.size(); j++){
-            distance = round(towns[i].calcDistance(&towns[j]));
-            if (minDistance < 0 || distance < minDistance){
-                currentBestIndex = j;
-                //cout << "best index " << j << endl;
+        minDistance = towns[i].calcDistance(&towns[i+1]);
+        for (int j = i+2; j < towns.size(); j++){
+            distance = towns[i].calcDistance(&towns[j]);
+            if (distance < minDistance){
                 minDistance = distance;
+                iter_swap(towns.begin()+ i+1, towns.begin()+j);
             }
-        }
-        //cout << "ändrar i listan" << endl;
-        Town moveForward = towns[currentBestIndex];
-        Town moveBackward = towns[i+1];
-        
-        //cout << "flyttar nod " << moveForward.getIndex() << "Till pos: " << i+1 << endl;
-        //cout << "flyttar nod " << moveBackward.getIndex() << "Till pos: " << currentBestIndex << endl;
-
-        towns[i+1] = moveForward;
-        towns[currentBestIndex] = moveBackward;   
+        }   
     }
 }
+
 
 vector<Town> changeTour(int city1, int city2, vector<Town> *tour){
     
@@ -117,6 +108,27 @@ vector<Town> changeTour2H(int city1, int city2, vector<Town> *tour){
     return newVector;
 }
 
+vector<Town> changeTour2H2(int city1, int city2, vector<Town> *tour){
+    vector<Town> newVector;
+    
+    for (int start = 0; start < city1; start++){
+        newVector.push_back((*tour)[start]);
+    }
+
+    newVector.push_back((*tour)[city2]);
+
+    for(int cont = city1; cont < city2; cont ++){ 
+        newVector.push_back((*tour)[cont]);
+    }
+
+    for (int end = city2+1; end < (*tour).size(); end ++){
+        newVector.push_back((*tour)[end]);
+    }
+    return newVector;
+}
+
+
+
 
 void new2Opt(vector<Town>& cityVector){
     int newDistance;
@@ -133,7 +145,7 @@ void new2Opt(vector<Town>& cityVector){
                 
                 currentDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city1, numCities)]) + 
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
-                
+
                 newDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city2, numCities)]) + 
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
                 
@@ -152,6 +164,8 @@ void new2Opt(vector<Town>& cityVector){
 void new2HOpt(vector<Town>& cityVector){
     int currentDistance;
     int newDistance;
+    int currentDistance2;
+    int newDistance2;
     
     int numCities = cityVector.size();
     //cout << "antalet noder in: " << numCities;
@@ -170,47 +184,32 @@ void new2HOpt(vector<Town>& cityVector){
                 newDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city1+1, numCities)]) +
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city1, numCities)])+ 
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
+
+                currentDistance2 = cityVector[mod(city2-1, numCities)].calcDistance(&cityVector[mod(city2, numCities)]) +
+                cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)])+ 
+                cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city1-1, numCities)]);
+                
+                newDistance2 = cityVector[mod(city2-1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]) +
+                cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2, numCities)])+ 
+                cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city1-1, numCities)]);
                 
                 //cout << "längden på touren: " << newTour.size();
                 //cout << "avstånd innan: " << bestDistance << " avstånd efter: " << newDistance << endl;
                 
-                if (newDistance < currentDistance){
-                    cityVector = changeTour2H(city1, city2, &cityVector);
-                    find = true;
+                if (newDistance < currentDistance || newDistance2 < currentDistance2){
+                    if (newDistance-currentDistance < newDistance2-currentDistance2){
+                        cityVector = changeTour2H(city1, city2, &cityVector);
+                        find = true;
+                    }
+                    
+                
+                    else{
+                        cityVector = changeTour2H2(city1, city2, &cityVector);
+                        find = true;
+                    }
                 }
             }
         }
-    }
-}
-
-void randomOpt(vector<Town> &cityVector){
-    int numCities = (cityVector).size();
-    int city1;
-    int city2;
-    int city3;
-    int city4;
-    int currentTourDistance;
-    int newTourDistance;
-    int numLoops = 2;
-    vector<Town> newTour;
-
-    while (numLoops > 0){
-        city1 = rand() % numCities;
-        city2 = rand() % (numCities-city1) +city1;
-        city3 = rand() % numCities;
-        city4 = rand() % (numCities-city3) +city3;
-             
-        newTour = changeTour(city1, city2, &cityVector);
-        newTour = changeTour(city3, city4, &newTour);
-        new2Opt(newTour);
-        new2HOpt(newTour);
-        newTourDistance = calcTourDist(newTour);
-        currentTourDistance = calcTourDist(newTour);
-        if (newTourDistance < currentTourDistance){
-            cityVector = newTour;
-        }
-
-        numLoops --;
     }
 }
 
@@ -218,7 +217,7 @@ int main(){
 
     //cout << "Done!" << endl;
 
-    srand(time(NULL));
+    //srand(time(NULL));
     int numTowns;
     cin >> numTowns;
     
@@ -235,24 +234,37 @@ int main(){
     int currentBestDist = std::numeric_limits<int>::max();
     std::srand ( unsigned ( std::time(0) ) );
 
+
+
     if (numTowns > 1) {
-        for (int i = 0; i < 4; i++) {
+        /*
+        greedy(towns);
+        new2Opt(towns);
+        new2HOpt(towns);
+        new2Opt(towns);
+        new2HOpt(towns);*/
+
+        for (int i = 0; i < 2; i++) {
+            /*int index1 = rand() % numTowns;
+            iter_swap(towns.begin(), towns.begin() + index1);*/
             greedy(towns);
 
             new2Opt(towns);
             new2HOpt(towns);
             //new2Opt(towns);
             //new2HOpt(towns);
-
             //randomOpt(towns);
+
             int thisTourDist = calcTourDist(towns);
             if (thisTourDist < currentBestDist) {
                 bestRoute = towns;
                 currentBestDist = thisTourDist;
                 //cout << "Changed bestRoute" << endl;
             }
-            std::random_shuffle(towns.begin(), towns.end());
+            
+            //std::random_shuffle(towns.begin(), towns.end());
         }
+        
         for (Town ver : bestRoute) {
             cout << ver.index << endl;
         }
@@ -261,6 +273,8 @@ int main(){
     else {
         cout << 0 << endl;
     }
+
+    //return 0;
 
 }
 
