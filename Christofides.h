@@ -22,15 +22,15 @@ struct Graph {
     struct EdgeK* edges;
 };
 
-struct Vertix {
+struct Town {
     double x, y;
     int index;
 
-    Vertix(double xIn, double yIn, int indexIn) {
+    Town(double xIn, double yIn, int indexIn) {
         x = xIn; y = yIn; index = indexIn;
     }
 
-    int calcDistance(Vertix other) {
+    int calcDistance(Town other) {
         return (int) sqrt(pow( ( x - other.getX() ), 2 ) + pow( ( y - other.getY() ), 2 ));
     }
 
@@ -105,7 +105,7 @@ class Christofides {
 
 public:
     std::list<int> eulerTour;
-    explicit Christofides(std::vector<Vertix> cities);
+    explicit Christofides(std::vector<Town> cities);
     void printTour(std::list<int> inList);
     std::vector<Node> citiesOut;
 private:
@@ -113,7 +113,7 @@ private:
     void perfectMatching(std::vector<std::list<int>>& verticesAdjacency);
     void hierholzer(std::vector<std::list<int>>& verticesAdjacency); //Find eulerian tour
     void addEdges();
-    std::vector<Vertix>& cities;
+    std::vector<Town>& cities;
     Graph fullGraph, kruskalGraph;
     Sets nodeSets;
 };

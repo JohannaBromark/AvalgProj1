@@ -6,6 +6,7 @@
 #include <set>
 #include <unordered_set>
 #include <algorithm>
+#include "hungarian.h"
 //#include "Node.h"
 
 int compareEdge(const void *s1, const void *s2) {
@@ -14,7 +15,7 @@ int compareEdge(const void *s1, const void *s2) {
     return int(e1->weight - e2->weight);
 }
 
-Christofides::Christofides(std::vector<Vertix> citiesIn) : cities(citiesIn), nodeSets(cities.size()) {
+Christofides::Christofides(std::vector<Town> citiesIn) : cities(citiesIn), nodeSets(cities.size()) {
     //std::cout << "Initerar" << std::endl;
     fullGraph.v = (int) cities.size();
     if (fullGraph.v == 1) {
@@ -86,7 +87,7 @@ void Christofides::kruskal(){
 
 void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacency) {
     //std::cout << "Perfect Matching" << std::endl;
-    //Does not produce minimal perfect matching --> could be improved.
+    //Uses hungarian algorithm implemented by Shaunak Kishore (kshaunak@gmail.com) 2015
     std::vector<int> unevenVset = nodeSets.generateUnevenVset();
     int nUnevenV = unevenVset.size();
 
@@ -104,6 +105,18 @@ void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacenc
         }
     }
 
+    Cost costMatrix[nUnevenV][nUnevenV];
+    for (EdgeK edge : edges) {
+        costMatrix[edge.to][edge.from] = edge.weight;
+    }
+    Hungarian hungarian(nUnevenV, costMatrix);
+    Hungarian::Status status = hungarian.Solve();
+
+    for (int i = 0; i < nUnevenV; i++) {
+        verticesAdjacency.at(unevenVset.at(i)).emplace_back(hungarian.GetXMatch(i));
+    }
+
+    /*
     std::set<int> usedNodes;
 
     std::qsort(edges, n, sizeof(struct EdgeK), compareEdge);
@@ -117,9 +130,10 @@ void Christofides::perfectMatching(std::vector<std::list<int>>& verticesAdjacenc
             counter++;
         }
     }
+     */
     for (int e = 0; e < kruskalGraph.e; e++) {
         verticesAdjacency.at(kruskalGraph.edges[e].from).emplace_back(kruskalGraph.edges[e].to);
-        //std::cout << "Vertix " << edgesIn[e].from << " adjacent to: " << verticesAdjacency.at(edgesIn[e].from).front() << std::endl;
+        //std::cout << "Town " << edgesIn[e].from << " adjacent to: " << verticesAdjacency.at(edgesIn[e].from).front() << std::endl;
         verticesAdjacency.at(kruskalGraph.edges[e].to).emplace_back(kruskalGraph.edges[e].from);
     }
 }

@@ -5,9 +5,10 @@
 #include <ctime>
 #include <algorithm>
 #include <limits>
+#include "Christofides.h"
 
 using namespace std;
-
+/*
 struct Town {
     double x, y;
     int index;
@@ -28,7 +29,7 @@ struct Town {
         return y;
     }
 };
-
+*/
 void greedy(vector<Town>& towns){
     int minDistance = -1;
     int distance; 
@@ -235,13 +236,13 @@ int main(){
     std::srand ( unsigned ( std::time(0) ) );
 
     if (numTowns > 1) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             greedy(towns);
 
             new2Opt(towns);
             new2HOpt(towns);
-            new2Opt(towns);
-            new2HOpt(towns);
+            //new2Opt(towns);
+            //new2HOpt(towns);
 
             //randomOpt(towns);
             int thisTourDist = calcTourDist(towns);
