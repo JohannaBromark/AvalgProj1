@@ -131,10 +131,11 @@ bool isPrime(unsigned long long number) {
     bool composite;
     for (int a = 2; a <= limit; a++) {
         if (modPow(a, d, number) != 1) {
+            composite = true;
             for (int r = 0; r < s; r++) {
-                composite = true;
-                if (modPow(a, myExp(2, r) * d, number) == -1) {
+                if (modPow(a, (myExp(2, r) * d), number) == number - 1) {
                     composite = false;
+                    break;
                 }
             }
             if (composite) {
@@ -147,7 +148,11 @@ bool isPrime(unsigned long long number) {
 
 bool findFactors(unsigned long long number, std::vector<unsigned long long>& factors) {
     //Recursive function for printing all factors of a number
-    if (isPrime(number)) {
+
+    if (number > 18446744073709551614) { //Will get wrong answer if larger than 64 bits, min size for unsigned long long 18446744073709551614
+        return false;
+    }
+    else if (number == 0 || isPrime(number)) {
         factors.push_back(number);
         return true;
     }
@@ -176,12 +181,14 @@ bool findFactors(unsigned long long number, std::vector<unsigned long long>& fac
 }
 
 int main() {
-    std::cout << isPrime(103) << std::endl;
+    //std::cout << isPrime(7919) << std::endl;
 
     unsigned long long number;
     std::cin >> number;
 
     std::vector<unsigned long long> factors;
+
+
     if (findFactors(number, factors)) {
         for (unsigned long long factor: factors) {
             std::cout << factor << std::endl;
