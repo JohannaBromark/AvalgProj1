@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <random>
+#include <cmath>
 #include <algorithm>
 #include <string>
 //#include <set>
@@ -141,29 +142,6 @@ unsigned long long myExp(unsigned long long x, int y) {
     return x * myExp(x, y - 1);
 }
 
-unsigned long long pollardsRho(unsigned long long number, int startValue) {
-    unsigned long long factor = 1, x = startValue, y = startValue, cycle_size = 2;
-    while (factor == 1) {
-        for (int count = 0; count < cycle_size && factor <= 1; count++) {
-            x = gFunction(x, number);
-            //y = gFunction(gFunction(y, number), number);
-            factor = gcd(x - y, number);
-        }
-        cycle_size *= 2;
-        y = x;
-    }
-    if (factor == number) {
-        return 0;
-    }
-    else {
-        return factor;
-    }
-}
-
-unsigned long long quadraticSieve(unsigned long long number, std::vector<unsigned long long>& factors) {
-
-}
-
 unsigned long long modPow(unsigned long long base, unsigned long long pow, unsigned long long mod) {
     base %= mod;
     unsigned long long result = 1;
@@ -295,6 +273,57 @@ bool isPrime(unsigned long long number) {
     }
     return true;
 }
+
+
+unsigned long long pollardsRho(unsigned long long number, int startValue) {
+    unsigned long long factor = 1, x = startValue, y = startValue, cycle_size = 2;
+    while (factor == 1) {
+        for (int count = 0; count < cycle_size && factor <= 1; count++) {
+            x = gFunction(x, number);
+            //y = gFunction(gFunction(y, number), number);
+            factor = gcd(x - y, number);
+        }
+        cycle_size *= 2;
+        y = x;
+    }
+    if (factor == number) {
+        return 0;
+    }
+    else {
+        return factor;
+    }
+}
+
+bool quadraticSieve(unsigned long long number, std::vector<unsigned long long>& factors) {
+    // Calculates factors and adds to factors list
+    // Returns true if factorization successful, false otherwise.
+    //Removing small prime factors
+    for (int prime : firstPrimesList) {
+        if (number % prime == 0) {
+            number /= prime;
+            factors.push_back((unsigned long long) prime);
+        }
+    }
+    if (isProbablyPrime(number, 10)) {
+        factors.push_back(number);
+        return true;
+    }
+    int trialDivisionLimit = 10; // <<--- what should we put this to?
+    //Determine if perfect potens
+    for (int k = 2; k < trialDivisionLimit; k++) {
+        if (std::pow((unsigned long long) std::pow(number, 1/k), k) == number) { // <-- rundar denna ned eller upp? Vad är rätt?
+            number = std::pow(number, 1/k);
+            if (isProbablyPrime(number, 10)) { //<--- smart idé på hur man gör om ej prime?
+                for (int i = 0; i < k; i++) {
+                    factors.push_back(number);
+                }
+                return true;
+            }
+        }
+    }
+
+}
+
 
 bool findFactors(unsigned long long number, std::vector<unsigned long long>& factors) {
     //Recursive function for printing all factors of a number
