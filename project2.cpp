@@ -11,100 +11,8 @@
 
 //Ladda ned bibliotek och kompilera GMP. Kompilera med specinställningar från Christian c++.
 
-unsigned long long gcd(unsigned long long x, unsigned long long y) {
-    //Finds greatest common divisor
-    if (x < y) {
-        return gcd(y, x);
-    }
-    while (y > 0){
-        unsigned long long z = x % y;
-        x = y;
-        y = z;
-    }
-    return x;
-}
-
-unsigned long long gFunction(unsigned long long x, unsigned long long number) {
-    return (x * x + 1) % number;
-}
-
-unsigned long long myExp(unsigned long long x, int y) {
-    if (y == 0) {
-        return 1;
-    }
-    else if (y == 1) {
-        return x;
-    }
-    return x * myExp(x, y - 1);
-}
-
-unsigned long long pollardsRho(unsigned long long number, int startValue) {
-    unsigned long long factor = 1, x = startValue, y = startValue, cycle_size = 2;
-    while (factor == 1) {
-        for (int count = 0; count < cycle_size && factor <= 1; count++) {
-            x = gFunction(x, number);
-            //y = gFunction(gFunction(y, number), number);
-            factor = gcd(x - y, number);
-        }
-        cycle_size *= 2;
-        y = x;
-    }
-    if (factor == number) {
-        return 0;
-    }
-    else {
-        return factor;
-    }
-}
-
-bool mrInnerLoop(unsigned long long x, int s, unsigned long long number) {
-    for (int j = 0; j < s - 1; j++) {
-        x = (x * x) % number;
-        if (x == 1){
-            return false;
-        }
-        if (x == number - 1) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool isProbablyPrime(unsigned long long number, int certainty) {
-    //Miller-Rabins function for estimating if prime
-    //funkar inte för 103
-    if (number == 2 || number == 3 || number == 5 || number == 7) {
-        return true;
-    }
-    else if (number % 2 == 0 || number < 2) {
-        return false;
-    }
-    unsigned long long d = number - 1;
-    int s = 0;
-    while (d % 2 == 0) {
-        s += 1;
-        d /= 2;
-    }
-    //std::random_device rd;
-
-    unsigned long long x;
-    for (int i = 0; i < certainty; i++) { //WitnessLoop
-        std::mt19937_64 rng(time(0));
-        std::uniform_int_distribution<int> uni(2, number-1);
-        auto randInt = uni(rng);
-        x = myExp(randInt, d) % number;
-        if (x == 1 || x == (number - 1)) {
-            continue;
-        }
-        if (! mrInnerLoop(x, s, number)) {
-            return false;
-        }
-    }
-    return true;
-}
-
+//Gör om till något som går snabbare att söka i
 int firstPrimesList[] = {
-
         2, 3, 5, 7, 11, 13,     17,     19,     23,     29,
         31  ,   37   ,  41  ,   43  ,   47   ,  53   ,  59   ,  61,     67  ,   71,
         73  ,   79   ,  83   ,  89   ,  97   , 101   , 103   , 107 ,   109  ,  113,
@@ -206,7 +114,55 @@ int firstPrimesList[] = {
         7727,   7741 ,  7753  , 7757  , 7759   ,7789  , 7793  , 7817  , 7823  , 7829,
         7841,   7853 ,  7867  , 7873  , 7877   ,7879  , 7883  , 7901  , 7907  , 7919,
 };
-//std::set<int> firstPrimes(firstPrimesList);
+unsigned long long gcd(unsigned long long x, unsigned long long y) {
+    //Finds greatest common divisor
+    if (x < y) {
+        return gcd(y, x);
+    }
+    while (y > 0){
+        unsigned long long z = x % y;
+        x = y;
+        y = z;
+    }
+    return x;
+}
+
+unsigned long long gFunction(unsigned long long x, unsigned long long number) {
+    return (x * x + 1) % number;
+}
+
+unsigned long long myExp(unsigned long long x, int y) {
+    if (y == 0) {
+        return 1;
+    }
+    else if (y == 1) {
+        return x;
+    }
+    return x * myExp(x, y - 1);
+}
+
+unsigned long long pollardsRho(unsigned long long number, int startValue) {
+    unsigned long long factor = 1, x = startValue, y = startValue, cycle_size = 2;
+    while (factor == 1) {
+        for (int count = 0; count < cycle_size && factor <= 1; count++) {
+            x = gFunction(x, number);
+            //y = gFunction(gFunction(y, number), number);
+            factor = gcd(x - y, number);
+        }
+        cycle_size *= 2;
+        y = x;
+    }
+    if (factor == number) {
+        return 0;
+    }
+    else {
+        return factor;
+    }
+}
+
+unsigned long long quadraticSieve(unsigned long long number, std::vector<unsigned long long>& factors) {
+
+}
 
 unsigned long long modPow(unsigned long long base, unsigned long long pow, unsigned long long mod) {
     base %= mod;
@@ -215,11 +171,62 @@ unsigned long long modPow(unsigned long long base, unsigned long long pow, unsig
         if (pow & 1) { //if odd
             result = (result * base) % mod;
         }
-        base = (base * base) % mod;
         pow >>= 1; //division by two
+        base = (base * base) % mod;
     }
     return result;
 }
+
+bool mrInnerLoop(unsigned long long x, int s, unsigned long long number) {
+    for (int j = 0; j < s - 1; j++) {
+        x = (x * x) % number;
+        if (x == 1){
+            return false;
+        }
+        if (x == number - 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isProbablyPrime(unsigned long long number, int certainty) {
+    //Miller-Rabins function for estimating if prime
+    if (number == 2 || number == 3 || number == 5 || number == 7) {
+        return true;
+    }
+    else if (!(number & 1) || number < 2) { //not odd
+        return false;
+    }
+    unsigned long long d = number - 1;
+    int s = 0;
+    while (! (d & 1)) { //while not odd
+        s += 1;
+        d >>= 1; //division by two
+    }
+    //std::random_device rd;
+
+    unsigned long long x;
+    for (int i = 0; i < certainty; i++) { //WitnessLoop
+        std::mt19937_64 rng(time(0));
+        std::uniform_int_distribution<int> uni(2, number-2);
+        auto randInt = uni(rng);
+        x = modPow(randInt, d, number);
+        if (x == 1 || x == (number - 1)) {
+            continue;
+        }
+        if (! mrInnerLoop(x, s, number)) {
+            return false;
+        }
+        else {
+            continue;
+        }
+    }
+    return true;
+}
+
+
+//std::set<int> firstPrimes(firstPrimesList);
 
 std::vector<int> aList = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 73, 61, 1662803};
 
@@ -292,10 +299,10 @@ bool isPrime(unsigned long long number) {
 bool findFactors(unsigned long long number, std::vector<unsigned long long>& factors) {
     //Recursive function for printing all factors of a number
 
-    if (number > (18446744073709551-1)) { //Will get wrong answer if larger than 64 bits, min size for unsigned long long 18446744073709551614
+    if (number > (184467440737095510-1)) { //Will get wrong answer if larger than 64 bits, min size for unsigned long long 18446744073709551614
         return false;
     }
-    else if (number == 0 || isPrime(number)) {
+    else if (number == 0 || isProbablyPrime(number, 10)) {
         factors.push_back(number);
         return true;
     }
@@ -311,7 +318,7 @@ bool findFactors(unsigned long long number, std::vector<unsigned long long>& fac
         //std::cout << "fail" << std::endl;
         return false;
     }
-    else if (isPrime(factor)) {
+    else if (isProbablyPrime(factor, 10)) {
         factors.push_back(factor);
         return findFactors(number / factor, factors);
         //std::cout << factor << std::endl;
@@ -341,7 +348,7 @@ int main() {
 
     //std::cin >> input;
     try { number = std::stoull(inputs.at(0)); }
-    catch (std::out_of_range) {number = 18446744073709551;}
+    catch (std::out_of_range) {number = 184467440737095510;}
 
     if (findFactors(number, factors)) {
         for (unsigned long long factor: factors) {
@@ -354,7 +361,7 @@ int main() {
 
     for (int i = 1; i < inputs.size(); i++) {
         try { number = std::stoull(inputs.at(i)); }
-        catch (std::out_of_range) {number = 18446744073709551;}
+        catch (std::out_of_range) {number = 184467440737095510;}
         factors.clear();
 
         std::cout << "\n";
