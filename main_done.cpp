@@ -1,16 +1,19 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-//#include <time.h>
-#include <ctime>
 #include <algorithm>
-#include <limits>
-#include "Christofides.h"
-#include <chrono>
+
+/*
+Authors:
+Jacob Björkman, jacobbj@kth.se
+Johanna Bromark, bromark@kth.se
+Isabelle Hallman, ihal@kth.se
+*/
 
 using namespace std;
-/*
+
 struct Town {
+    //Structure to for the cities
     double x, y;
     int index;
 
@@ -29,9 +32,10 @@ struct Town {
     double getY(){
         return y;
     }
-};*/
+};
 
 void greedy(vector<Town>& towns){
+    //Greedy algorithm for finding an "optimal" tour by chosing the the city that is closest. 
     int minDistance;
     int distance; 
     int currentBestIndex;
@@ -50,29 +54,24 @@ void greedy(vector<Town>& towns){
 
 
 vector<Town> changeTour(int city1, int city2, vector<Town> *tour){
-    
-    vector<Town> newVector;
-    //cout << "längd på tour i början inne i swap: " << tour.size() << endl
-    //cout << "Ska byta "<< city1 << "och" << city2;
-    
+    // Changes position of two cities and putting the cities in the middle in reverse order. 
+    vector<Town> newVector;    
     for (int start = 0; start < city1; start++){
-        //cout << "Lägger in först: " << tour[c].getIndex() << endl;
         newVector.push_back((*tour)[start]);
     }
 
     for(int inv = 0; inv <= city2-city1; inv ++){
-        //cout << "Lägger in omvänt: " << tour[city2 - num].getIndex() << endl;
         newVector.push_back((*tour)[city2 - inv]);
     }
 
     for (int end = city2+1; end < (*tour).size(); end ++){
-        //cout << "Lägger in sist: " << tour[end].getIndex() << endl;
         newVector.push_back((*tour)[end]);
     }
     return newVector;
 }
 
 int calcTourDist(vector<Town>& tour){
+    //Computes the total distance of the tour
     int totalDist = 0;
     for (int i = 0; i < tour.size()-1; i++){
         totalDist += tour[i].calcDistance(&tour[i+1]);
@@ -82,6 +81,7 @@ int calcTourDist(vector<Town>& tour){
 }
 
 int mod(int num, int denum){
+    // Customized modolu function that handles the negative values
     if (num >= 0){
         return num%denum;
     }
@@ -91,6 +91,7 @@ int mod(int num, int denum){
 }
 
 vector<Town> changeTour2H(int city1, int city2, vector<Town> *tour){
+    // Similar to changeTour, but places city1 in between of city2 and city2 + 1. Used in 2.5Opt
     vector<Town> newVector;
     
     for (int start = 0; start < city1; start++){
@@ -110,6 +111,7 @@ vector<Town> changeTour2H(int city1, int city2, vector<Town> *tour){
 }
 
 vector<Town> changeTour2H2(int city1, int city2, vector<Town> *tour){
+    // Similar to changeTour, but places city2 in between of city1-1 and city1. Used in 2.5Opt
     vector<Town> newVector;
     
     for (int start = 0; start < city1; start++){
@@ -129,11 +131,10 @@ vector<Town> changeTour2H2(int city1, int city2, vector<Town> *tour){
 }
 
 void new2Opt(vector<Town>& cityVector){
+    //Implemented 2-opt that serches for edges that can be changed to get at shorter route. 
     int newDistance;
     int currentDistance;
     int numCities = cityVector.size();
-    //cout << "antalet noder in: " << numCities;
-    //cout << "längd på tour i början: " << currentTour.size();
     bool find = true;
 
     while (find){
@@ -147,9 +148,6 @@ void new2Opt(vector<Town>& cityVector){
                 newDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city2, numCities)]) + 
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
                 
-                //cout << "längden på touren: " << newTour.size();
-                //cout << "avstånd innan: " << bestDistance << " avstånd efter: " << newDistance << endl;
-                
                 if (newDistance < currentDistance){
                     cityVector = changeTour(city1, city2, &cityVector);
                     find = true;
@@ -160,14 +158,13 @@ void new2Opt(vector<Town>& cityVector){
 }
 
 void new2HOpt(vector<Town>& cityVector){
+    //Implemented 2.5-opt that serches for cities that can be moved in between of other edges. 
     int currentDistance;
     int newDistance;
     int currentDistance2;
     int newDistance2;
     
     int numCities = cityVector.size();
-    //cout << "antalet noder in: " << numCities;
-    //cout << "längd på tour i början: " << currentTour.size();
     bool find = true;
 
     while (find){
@@ -175,6 +172,8 @@ void new2HOpt(vector<Town>& cityVector){
         for (int city1 = 0; city1 < numCities; city1++){
             for (int city2 = city1+2; city2 < numCities-1; city2++){
                 
+                
+                // Is A-B-C and C-D or A-C and C-B-D a better choice 
                 currentDistance = cityVector[mod(city1-1, numCities)].calcDistance(&cityVector[mod(city1, numCities)]) +
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city1+1, numCities)])+ 
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
@@ -183,6 +182,7 @@ void new2HOpt(vector<Town>& cityVector){
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city1, numCities)])+ 
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)]);
 
+                // Is A-B and C-D-E or A-D-B and C-E a better choice 
                 currentDistance2 = cityVector[mod(city2-1, numCities)].calcDistance(&cityVector[mod(city2, numCities)]) +
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city2+1, numCities)])+ 
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city1-1, numCities)]);
@@ -191,16 +191,11 @@ void new2HOpt(vector<Town>& cityVector){
                 cityVector[mod(city1, numCities)].calcDistance(&cityVector[mod(city2, numCities)])+ 
                 cityVector[mod(city2, numCities)].calcDistance(&cityVector[mod(city1-1, numCities)]);
                 
-                //cout << "längden på touren: " << newTour.size();
-                //cout << "avstånd innan: " << bestDistance << " avstånd efter: " << newDistance << endl;
-                
                 if (newDistance < currentDistance || newDistance2 < currentDistance2){
                     if (newDistance-currentDistance < newDistance2-currentDistance2){
                         cityVector = changeTour2H(city1, city2, &cityVector);
                         find = true;
                     }
-                    
-                
                     else{
                         cityVector = changeTour2H2(city1, city2, &cityVector);
                         find = true;
@@ -213,9 +208,6 @@ void new2HOpt(vector<Town>& cityVector){
 
 int main(){
 
-    //cout << "Done!" << endl;
-
-    //srand(time(NULL));
     int numTowns;
     cin >> numTowns;
     
@@ -230,67 +222,28 @@ int main(){
     }
     vector<Town> bestRoute;
     int currentBestDist = std::numeric_limits<int>::max();
-    std::srand ( unsigned ( std::time(0) ) );
-
-
 
     if (numTowns > 1) {
 
-        int numLoops = 20;
-            chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
-            //greedy(towns);
-            //new2Opt(towns); 
-            //new2HOpt(towns);  
-            Christofides test = Christofides(towns);     
-            chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-            
-            int routeLenght = calcTourDist(test.citiesOut);
-            auto totTime = chrono::duration_cast<chrono::microseconds>(end - start).count(); 
-            numLoops --;   
-            
-        cout << "Ruttlängd: " << routeLenght <<endl;
-        cout << "Tid [ms]: " <<totTime << endl;
-        return 0;
-        
-        /*
-        new2Opt(towns);
-        new2HOpt(towns);
-        new2Opt(towns);
-        new2HOpt(towns);*/
-
-        /*
         for (int i = 0; i < 2; i++) {
-            /*int index1 = rand() % numTowns;
-            iter_swap(towns.begin(), towns.begin() + index1);
             greedy(towns);
-
             new2Opt(towns);
             new2HOpt(towns);
-            //new2Opt(towns);
-            //new2HOpt(towns);
-            //randomOpt(towns);
 
             int thisTourDist = calcTourDist(towns);
             if (thisTourDist < currentBestDist) {
                 bestRoute = towns;
                 currentBestDist = thisTourDist;
-                //cout << "Changed bestRoute" << endl;
             }
-            
-            //std::random_shuffle(towns.begin(), towns.end());
         }
-        */
-
+        
         for (Town ver : bestRoute) {
             cout << ver.index << endl;
         }
-
     }
     else {
         cout << 0 << endl;
     }
 
-    //return 0;
-
+    return 0;
 }
-

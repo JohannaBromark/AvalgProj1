@@ -4,10 +4,10 @@ using namespace std;
 
     Node::Node (double xIn, double yIn, int indexIn) {
         x = xIn; y = yIn; index = indexIn;
-        //twoCon2Hub = false;
-        //oneCon2Hub = false;
-        //neighbor1 = NULL;
-        //neighbor2 = NULL;
+        twoCon2Hub = false;
+        oneCon2Hub = false;
+        neighbor1 = NULL;
+        neighbor2 = NULL;
         //visited = false;
     }
     
@@ -24,7 +24,7 @@ using namespace std;
     }
 
     
-    /*
+    
     bool Node::operator== (Node& other) {
         return index == other.getIndex();
     }
@@ -43,7 +43,7 @@ using namespace std;
     void Node::addNeighbor(Node* newNeighbor){
         if (neighbor1 == 0){
             neighbor1 = newNeighbor;
-            visited = true;
+            //visited = true;
         }
         else if(neighbor2 == 0 && neighbor1->getIndex() != newNeighbor->getIndex()){
             neighbor2 = newNeighbor;
@@ -112,11 +112,11 @@ using namespace std;
 
         return neighbor1->getIndex() == posNeighbor.getIndex() || neighbor2->getIndex() == posNeighbor.getIndex();
     }
-
+/*
     bool Node::isVisited(){
         return visited;
     }
-
+*/
     float Node::calcTotDistance(){
         if (neighbor2 != 0){
             return calcDistance(*neighbor1) + calcDistance(*neighbor2);
@@ -129,9 +129,8 @@ using namespace std;
         }
         
     }
-
+/*
     void Node::setIsVisited(){
         visited = true;
     }
-
 */
