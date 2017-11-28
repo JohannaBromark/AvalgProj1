@@ -12,7 +12,7 @@ class Node {
         int calcDistance (Node& otherCity);
         int getIndex();
         std::tuple<float, float> getXY();
-        /*
+        
         
         bool operator==(Node& other);		
         void addNeighbor(Node *newNeighbor);
@@ -27,18 +27,18 @@ class Node {
         bool hasNeighbor(Node& posNeighbor);
         bool isVisited();
         float calcTotDistance();
-        void setIsVisited();
-        */
+        //void setIsVisited();
+        
 
     private:
         float x, y;
         int index;
-        /*
+        
         Node *neighbor1;
         Node *neighbor2;
         bool oneCon2Hub;
         bool twoCon2Hub;
-        bool visited;*/
+        //bool visited;
 };
 
 #endif //_Node_h
