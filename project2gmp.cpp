@@ -9,7 +9,8 @@
 #include <string>
 //#include <set>
 #include <iterator>
-#include <gmpxx.h>
+#include <gmp.h>
+#include <string>
 
 //Ladda ned bibliotek och kompilera GMP. Kompilera med specinställningar från Christian c++.
 //Öka poängen genom att kolla efter specialfall. p^exp, innan den tar en massa tid.
@@ -123,6 +124,7 @@ int firstPrimesList[] = {
 //mpz_probab_prime_p(mpz, int för antalet iterationer) 2- probably 1- prime 0- not prime
 //mpz_gcd(variabel att a resultatet i, forsta , andra)
 
+/*
 mpz_class gcd(mpz_class x, mpz_class y) {
     //Finds greatest common divisor
     if (x < y) {
@@ -135,9 +137,16 @@ mpz_class gcd(mpz_class x, mpz_class y) {
     }
     return x;
 }
+*/
 
-mpz_class gFunction(mpz_class& x, const mpz_class& number) {
-    return (x * x + 1) % number;
+void gFunction(mpz_t& x, const mpz_t& number) {
+    mpz_t sum, mult;
+    mpz_inits(sum, mult, NULL);
+    mpz_mul(mult,x,x);
+    mpz_add_ui(sum, mult, 1);
+    mpz_mod(x, sum, number);
+    mpz_clear(sum);
+    mpz_clear(mult);
 }
 
 mpz_class myPow(mpz_class& x, mpz_class& y) {
@@ -285,24 +294,32 @@ bool isPrime(const mpz_class number) {
     return true;
 }
 
+//Ingen isprime, gcd, modpow(power i modulus), mypower(för att inte casta om till double) 
 
-mpz_class pollardsRho(const mpz_class &number, int& startValue) {
-    mpz_class factor = 1, x = startValue, y = startValue, cycle_size = 2;
-    while (factor == 1) {
-        for (int count = 0; count < cycle_size && factor <= 1; count++) {
-            x = gFunction(x, number);
-            //y = gFunction(gFunction(y, number), number);
-            factor = gcd(x - y , number);
+void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
+    mpz_t x, y, cycle_size, diff; 
+    mpz_inits(x, y, cycle_size, diff, NULL);
+    mpz_set_str(factor, "1", 10);  //10 since it is base 10
+    mpz_set_si(x, startValue);
+    mpz_set_si(y, startValue);
+    mpz_set_str(cycle_size, "2", 10);
+    while (mpz_cmp_si(factor, 1) == 0) { //mpz_cmp_si returns 0 if they are equal
+        for (int count = 0; mpz_cmp_si(cycle_size, count)>0 && mpz_cmp_si(factor, 1) < 1; count++) {
+            gFunction(x, number); //changes x
+            mpz_sub(diff, x, y);
+            mpz_gcd(factor, diff , number); //sets factor to gcd of x-y and number
         }
-        cycle_size *= 2;
-        y = x;
+        mpz_mul_si(cycle_size, cycle_size, 2);
+        mpz_set(y, x);
     }
-    if (factor == number) {
-        return 0;
+    if (mpz_cmp(factor, number) == 0) {
+        mpz_set_str(factor, "0", 10);
     }
-    else {
-        return factor;
-    }
+    mpz_clear(x);
+    mpz_clear(y);
+    mpz_clear(cycle_size);
+    mpz_clear(diff);
+
 }
 
 bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
@@ -350,6 +367,7 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
     }
 
     int startValue = 2;
+    //skicka in factor istället
     mpz_class factor = pollardsRho(number, startValue);
     int tryFor = 0;
     while (factor == 0 && tryFor < 10 && startValue < number) {
