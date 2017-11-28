@@ -11,6 +11,9 @@
 #include <iterator>
 
 //Ladda ned bibliotek och kompilera GMP. Kompilera med specinställningar från Christian c++.
+//Öka poängen genom att kolla efter specialfall. p^exp, innan den tar en massa tid.
+//Använd pekare även för ints så ska det gå snabbare
+
 
 //Gör om till något som går snabbare att söka i
 int firstPrimesList[] = {
@@ -113,7 +116,7 @@ int firstPrimesList[] = {
         7573,   7577 ,  7583 ,  7589  , 7591   ,7603  , 7607  , 7621 ,  7639  , 7643,
         7649,   7669 ,  7673 ,  7681  , 7687   ,7691  , 7699  , 7703  , 7717  , 7723,
         7727,   7741 ,  7753  , 7757  , 7759   ,7789  , 7793  , 7817  , 7823  , 7829,
-        7841,   7853 ,  7867  , 7873  , 7877   ,7879  , 7883  , 7901  , 7907  , 7919,
+        7841,   7853 ,  7867  , 7873  , 7877   ,7879  , 7883  , 7901  , 7907  , 7919
 };
 unsigned long long gcd(unsigned long long x, unsigned long long y) {
     //Finds greatest common divisor
@@ -128,21 +131,22 @@ unsigned long long gcd(unsigned long long x, unsigned long long y) {
     return x;
 }
 
-unsigned long long gFunction(unsigned long long x, unsigned long long number) {
+unsigned long long gFunction(unsigned long long& x, const unsigned long long& number) {
     return (x * x + 1) % number;
 }
 
-unsigned long long myExp(unsigned long long x, int y) {
+unsigned long long myPow(unsigned long long& x, unsigned long long& y) {
     if (y == 0) {
         return 1;
     }
     else if (y == 1) {
         return x;
     }
-    return x * myExp(x, y - 1);
+    y --;
+    return x * myPow(x, y);
 }
 
-unsigned long long modPow(unsigned long long base, unsigned long long pow, unsigned long long mod) {
+unsigned long long modPow(unsigned long long &base, unsigned long long &pow, const unsigned long long& mod) {
     base %= mod;
     unsigned long long result = 1;
     while (pow > 0) {
@@ -155,7 +159,7 @@ unsigned long long modPow(unsigned long long base, unsigned long long pow, unsig
     return result;
 }
 
-bool mrInnerLoop(unsigned long long x, int s, unsigned long long number) {
+bool mrInnerLoop(unsigned long long &x, int &s, const unsigned long long &number) {
     for (int j = 0; j < s - 1; j++) {
         x = (x * x) % number;
         if (x == 1){
@@ -168,7 +172,7 @@ bool mrInnerLoop(unsigned long long x, int s, unsigned long long number) {
     return false;
 }
 
-bool isProbablyPrime(unsigned long long number, int certainty) {
+bool isProbablyPrime(const unsigned long long &number, int certainty) {
     //Miller-Rabins function for estimating if prime
     if (number == 2 || number == 3 || number == 5 || number == 7) {
         return true;
@@ -182,13 +186,11 @@ bool isProbablyPrime(unsigned long long number, int certainty) {
         s += 1;
         d >>= 1; //division by two
     }
-    //std::random_device rd;
-
     unsigned long long x;
     for (int i = 0; i < certainty; i++) { //WitnessLoop
         std::mt19937_64 rng(time(0));
         std::uniform_int_distribution<int> uni(2, number-2);
-        auto randInt = uni(rng);
+        auto randInt = (unsigned long long) uni(rng);
         x = modPow(randInt, d, number);
         if (x == 1 || x == (number - 1)) {
             continue;
@@ -208,7 +210,7 @@ bool isProbablyPrime(unsigned long long number, int certainty) {
 
 std::vector<int> aList = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 73, 61, 1662803};
 
-bool isPrime2(unsigned long long number) {
+bool isPrime2(const unsigned long long number) {
     if (number == 2 || number == 3 || number == 5 || number == 7) {
         return true;
     }
@@ -224,11 +226,13 @@ bool isPrime2(unsigned long long number) {
     }
     unsigned long long limit = std::min(number - 1, (unsigned long long) (2 * std::pow(std::log(number), 2)));
     bool composite;
-    for (int a = 2; a <= limit; a++) {
+    for (unsigned long long a = 2; a <= limit; a++) {
         if (modPow(a, d, number) != 1) {
             composite = true;
-            for (int r = 0; r < s; r++) {
-                if (modPow(a, (myExp(2, r) * d), number) == number - 1) {
+            for (unsigned long long r = 0; r < s; r++) {
+                unsigned long long base = 2;
+                unsigned long long pow = myPow(base, r) * d;
+                if (modPow(a, pow, number) == number - 1) {
                     composite = false;
                     break;
                 }
@@ -241,7 +245,7 @@ bool isPrime2(unsigned long long number) {
     return true;
 }
 
-bool isPrime(unsigned long long number) {
+bool isPrime(const unsigned long long number) {
     if (std::find(std::begin(firstPrimesList), std::end(firstPrimesList), number) != std::end(firstPrimesList)) {
         return true;
     }
@@ -257,11 +261,13 @@ bool isPrime(unsigned long long number) {
     }
     unsigned long long limit = std::min(number - 1, (unsigned long long) (2 * std::pow(std::log(number), 2)));
     bool composite;
-    for (int a : aList) {
+    for (unsigned long long a : aList) {
         if (modPow(a, d, number) != 1) {
             composite = true;
-            for (int r = 0; r < s; r++) {
-                if (modPow(a, (myExp(2, r) * d), number) == number - 1) {
+            for (unsigned long long r = 0; r < s; r++) {
+                unsigned long long base = 2;
+                unsigned long long pow = myPow(base, r) * d;
+                if (modPow(a, pow, number) == number - 1) {
                     composite = false;
                     break;
                 }
@@ -275,13 +281,13 @@ bool isPrime(unsigned long long number) {
 }
 
 
-unsigned long long pollardsRho(unsigned long long number, int startValue) {
+unsigned long long pollardsRho(const unsigned long long &number, int& startValue) {
     unsigned long long factor = 1, x = startValue, y = startValue, cycle_size = 2;
     while (factor == 1) {
         for (int count = 0; count < cycle_size && factor <= 1; count++) {
             x = gFunction(x, number);
             //y = gFunction(gFunction(y, number), number);
-            factor = gcd(x - y, number);
+            factor = gcd(x - y , number);
         }
         cycle_size *= 2;
         y = x;
@@ -294,7 +300,7 @@ unsigned long long pollardsRho(unsigned long long number, int startValue) {
     }
 }
 
-bool quadraticSieve(unsigned long long number, std::vector<unsigned long long>& factors) {
+bool quadraticSieve(unsigned long long &number, std::vector<unsigned long long>& factors) {
     // Calculates factors and adds to factors list
     // Returns true if factorization successful, false otherwise.
     //Removing small prime factors
@@ -321,17 +327,19 @@ bool quadraticSieve(unsigned long long number, std::vector<unsigned long long>& 
             }
         }
     }
-
+    int c = 3;
+    int factorLimit = (int) c * std::exp(0.5 * std::sqrt(log(number) * log(log(number))));
+    return false;
 }
 
 
-bool findFactors(unsigned long long number, std::vector<unsigned long long>& factors) {
+bool findFactors(const unsigned long long &number, std::vector<unsigned long long>& factors) {
     //Recursive function for printing all factors of a number
 
-    if (number > (184467440737095510-1)) { //Will get wrong answer if larger than 64 bits, min size for unsigned long long 18446744073709551614
+    if (number > (184467440737095510 - 1)) { //Will get wrong answer if larger than 64 bits, min size for unsigned long long 18446744073709551614
         return false;
     }
-    else if (number == 0 || isProbablyPrime(number, 10)) {
+    else if (number == 0 || number == 1 || isProbablyPrime(number, 10)) {
         factors.push_back(number);
         return true;
     }
@@ -340,7 +348,8 @@ bool findFactors(unsigned long long number, std::vector<unsigned long long>& fac
     unsigned long long factor = pollardsRho(number, startValue);
     int tryFor = 0;
     while (factor == 0 && tryFor < 10 && startValue < number) {
-        factor = pollardsRho(number, startValue++);
+        startValue++;
+        factor = pollardsRho(number, startValue);
         tryFor++;
     }
     if (factor == 0) {
@@ -369,8 +378,8 @@ int main() {
         inputs.push_back(input);
     }*/
     int i = 0;
-    while (i < 3) {
-        std::cin >> input;
+    while ( std::cin >> input) {
+        //std::cin >> input;
         inputs.push_back(input);
         i++;
     }
