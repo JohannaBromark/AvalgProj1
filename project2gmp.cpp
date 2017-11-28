@@ -140,6 +140,10 @@ mpz_class gcd(mpz_class x, mpz_class y) {
 */
 
 void gFunction(mpz_t& x, const mpz_t& number) {
+    /*
+    Computes (x*x)+1 mod number (which factor we seek)
+    */
+    
     mpz_t sum, mult;
     mpz_inits(sum, mult, NULL);
     mpz_mul(mult,x,x);
@@ -185,7 +189,7 @@ bool mrInnerLoop(mpz_class &x, int &s, const mpz_class &number) {
     }
     return false;
 }
-
+/*
 bool isProbablyPrime(const mpz_class &number, int certainty) {
     //Miller-Rabins function for estimating if prime
     if (number == 2 || number == 3 || number == 5 || number == 7) {
@@ -219,7 +223,7 @@ bool isProbablyPrime(const mpz_class &number, int certainty) {
     return true;
 }
 
-
+*/
 //std::set<int> firstPrimes(firstPrimesList);
 
 std::vector<int> aList = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 73, 61, 1662803};
@@ -297,15 +301,23 @@ bool isPrime(const mpz_class number) {
 //Ingen isprime, gcd, modpow(power i modulus), mypower(för att inte casta om till double) 
 
 void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
+    /*
+    Finds non trivial factor for number. 
+    factor: the non trivial factor for number
+    number: the number to find factor for
+    startValue: the start value for x and y
+    */
     mpz_t x, y, cycle_size, diff; 
     mpz_inits(x, y, cycle_size, diff, NULL);
     mpz_set_str(factor, "1", 10);  //10 since it is base 10
     mpz_set_si(x, startValue);
     mpz_set_si(y, startValue);
     mpz_set_str(cycle_size, "2", 10);
+    //Loop as long as the factor is 1. i.e. we have not found a non trivial factor. 
     while (mpz_cmp_si(factor, 1) == 0) { //mpz_cmp_si returns 0 if they are equal
         for (int count = 0; mpz_cmp_si(cycle_size, count)>0 && mpz_cmp_si(factor, 1) < 1; count++) {
-            gFunction(x, number); //changes x
+            //changes x to (x²+1)mod number
+            gFunction(x, number); 
             mpz_sub(diff, x, y);
             mpz_gcd(factor, diff , number); //sets factor to gcd of x-y and number
         }
@@ -320,7 +332,7 @@ void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
     mpz_clear(cycle_size);
     mpz_clear(diff);
 }
-
+/*
 bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
     // Calculates factors and adds to factors list
     // Returns true if factorization successful, false otherwise.
@@ -352,34 +364,41 @@ bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
     int factorLimit = (int) c * std::exp(0.5 * std::sqrt(log(number) * log(log(number))));
     return false;
 }
+*/
 
 
-bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
+bool findFactors(const mpz_t &number, std::vector<mpz_t>& factors) {
     //Recursive function for printing all factors of a number
     mpz_t factor;
     mpz_init(factor);
+
+    //Behövs dessa rader nu när vi har störra siffror?
     if (number > (184467440737095510 - 1)) { 
         return false;
     }
-    else if (number == 0 || number == 1 || isProbablyPrime(number, 10)) {
+    else if (mpz_cmp_si(number, 0) == 0 || mpz_cmp_si(number, 1) == 0 || isProbablyPrime(number, 10)) {
         factors.push_back(number);
         return true;
     }
 
     int startValue = 2;
-    //skicka in factor istället
-    pollardsRho(factor, number, startValue);
+    //factor changes, finds a factor for number
+    pollardsRho(factor, number, startValue); 
     int tryFor = 0;
-    while (factor == 0 && tryFor < 10 && startValue < number) {
+    //Whilen måste ändras för factor är väl inte 0 nu
+    while (mpz_cmp_si(factor, 0) == 0 && tryFor < 10 && mpz_cmp_si(number, startValue) > 0) {
         startValue++;
         pollardsRho(factor, number, startValue);
         tryFor++;
     }
-    if (factor == 0) {
+
+    if (mpz_cmp_si(factor, 0) == 0) {
         //std::cout << "fail" << std::endl;
         return false;
     }
-    else if (isProbablyPrime(factor, 10)) {
+    //Ska det vara 10 eller något annat??
+    //prob_prime returnerar 0 om inte prime, 2 om prime 1 om kanske tror jag
+    else if (mpz_probab_prime_p(number, 10) > 0) {
         factors.push_back(factor);
         return findFactors(number / factor, factors);
         //std::cout << factor << std::endl;
