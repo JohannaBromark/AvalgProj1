@@ -223,7 +223,7 @@ bool isProbablyPrime(const mpz_class &number, int certainty) {
 //std::set<int> firstPrimes(firstPrimesList);
 
 std::vector<int> aList = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 73, 61, 1662803};
-
+/*
 bool isPrime2(const mpz_class number) {
     if (number == 2 || number == 3 || number == 5 || number == 7) {
         return true;
@@ -257,8 +257,8 @@ bool isPrime2(const mpz_class number) {
         }
     }
     return true;
-}
-
+}*/
+/*
 bool isPrime(const mpz_class number) {
     if (std::find(std::begin(firstPrimesList), std::end(firstPrimesList), number) != std::end(firstPrimesList)) {
         return true;
@@ -293,7 +293,7 @@ bool isPrime(const mpz_class number) {
     }
     return true;
 }
-
+*/
 //Ingen isprime, gcd, modpow(power i modulus), mypower(för att inte casta om till double) 
 
 void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
@@ -319,7 +319,6 @@ void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
     mpz_clear(y);
     mpz_clear(cycle_size);
     mpz_clear(diff);
-
 }
 
 bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
@@ -357,7 +356,8 @@ bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
 
 bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
     //Recursive function for printing all factors of a number
-
+    mpz_t factor;
+    mpz_init(factor);
     if (number > (184467440737095510 - 1)) { 
         return false;
     }
@@ -368,11 +368,11 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
 
     int startValue = 2;
     //skicka in factor istället
-    mpz_class factor = pollardsRho(number, startValue);
+    pollardsRho(factor, number, startValue);
     int tryFor = 0;
     while (factor == 0 && tryFor < 10 && startValue < number) {
         startValue++;
-        factor = pollardsRho(number, startValue);
+        pollardsRho(factor, number, startValue);
         tryFor++;
     }
     if (factor == 0) {
