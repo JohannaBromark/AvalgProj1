@@ -4,14 +4,9 @@
 #include <ctime>
 #include <algorithm>
 #include <limits>
-<<<<<<< HEAD
-#include "Christofides.h"
-#include <chrono>
-=======
->>>>>>> bbacc3277be753c4eff8f056467bc03e877e8204
 
 using namespace std;
-/*
+
 struct Town {
     double x, y;
     int index;
@@ -31,7 +26,7 @@ struct Town {
     double getY(){
         return y;
     }
-};*/
+};
 
 void greedy(vector<Town>& towns){
     int minDistance;
@@ -130,9 +125,6 @@ vector<Town> changeTour2H2(int city1, int city2, vector<Town> *tour){
     return newVector;
 }
 
-<<<<<<< HEAD
-void new2Opt(vector<Town>& cityVector){
-=======
 
 
 
@@ -140,16 +132,12 @@ void new2Opt(vector<Town>& cityVector, time_t timeBudget, time_t startTime){
     time_t timeElapsed = difftime(time(NULL), startTime);
 
 
->>>>>>> bbacc3277be753c4eff8f056467bc03e877e8204
     int newDistance;
     int currentDistance;
     int numCities = cityVector.size();
     //cout << "antalet noder in: " << numCities;
     //cout << "längd på tour i början: " << currentTour.size();
     bool find = true;
-    bool change = false;
-    int chanCit1;
-    int chanCit2;
 
     while (find && timeElapsed < timeBudget){
         find = false;
@@ -166,18 +154,10 @@ void new2Opt(vector<Town>& cityVector, time_t timeBudget, time_t startTime){
                 //cout << "avstånd innan: " << bestDistance << " avstånd efter: " << newDistance << endl;
                 
                 if (newDistance < currentDistance){
-                    change = true;
-                    chanCit1 = city1;
-                    chanCit2 = city2;
+                    cityVector = changeTour(city1, city2, &cityVector);
                     find = true;
-                    break;
                 }
             }
-            
-        }
-        if(change){
-                cityVector = changeTour(chanCit1, chanCit2, &cityVector);
-                change = false;
         }
         timeElapsed = difftime(time(NULL), startTime);
     }
@@ -189,10 +169,6 @@ void new2HOpt(vector<Town>& cityVector, time_t timeBudget, time_t startTime ){
     int newDistance;
     int currentDistance2;
     int newDistance2;
-
-    bool change = false;
-    int chanCit1;
-    int chanCit2;
     
     int numCities = cityVector.size();
     //cout << "antalet noder in: " << numCities;
@@ -225,13 +201,8 @@ void new2HOpt(vector<Town>& cityVector, time_t timeBudget, time_t startTime ){
                 
                 if (newDistance < currentDistance || newDistance2 < currentDistance2){
                     if (newDistance-currentDistance < newDistance2-currentDistance2){
-                        //cityVector = changeTour2H(city1, city2, &cityVector);
-                        change = true;
-                        chanCit1 = city1;
-                        chanCit2 = city2;
+                        cityVector = changeTour2H(city1, city2, &cityVector);
                         find = true;
-                        break;
-                        
                     }
                     
                 
@@ -241,10 +212,6 @@ void new2HOpt(vector<Town>& cityVector, time_t timeBudget, time_t startTime ){
                     }
                 }
             }
-        }
-        if(change){
-            cityVector = changeTour(chanCit1, chanCit2, &cityVector);
-            change = false;
         }
         timeElapsed = difftime(time(NULL), startTime);        
     }
@@ -268,58 +235,17 @@ int main(){
 
     time_t endwait;
     time_t start = time(NULL);
-    double timeBudget = 1.95; // stop randomizing when this has passed
+    double timeBudget = 2; // stop randomizing when this has passed
     srand(start);
 
 
     int thisTourDist;
     double timeElapsed = 0.0;
 
-    int amLoop = 0;
-
     if (numTowns > 1) {
-<<<<<<< HEAD
-
-        int numLoops = 20;
-            chrono::high_resolution_clock::time_point start = chrono::high_resolution_clock::now();
-            //greedy(towns);
-            //new2Opt(towns); 
-            //new2HOpt(towns);  
-            Christofides test = Christofides(towns);     
-            chrono::high_resolution_clock::time_point end = chrono::high_resolution_clock::now();
-            
-            int routeLenght = calcTourDist(test.citiesOut);
-            auto totTime = chrono::duration_cast<chrono::microseconds>(end - start).count(); 
-            numLoops --;   
-            
-        cout << "Ruttlängd: " << routeLenght <<endl;
-        cout << "Tid [ms]: " <<totTime << endl;
-        return 0;
-        
-        /*
-        new2Opt(towns);
-        new2HOpt(towns);
-        new2Opt(towns);
-        new2HOpt(towns);*/
-
-        /*
-        for (int i = 0; i < 2; i++) {
-            /*int index1 = rand() % numTowns;
-            iter_swap(towns.begin(), towns.begin() + index1);
-            greedy(towns);
-
-            new2Opt(towns);
-            new2HOpt(towns);
-            //new2Opt(towns);
-            //new2HOpt(towns);
-            //randomOpt(towns);
-
-            int thisTourDist = calcTourDist(towns);
-=======
         greedy(towns);
         
         while  (timeElapsed < timeBudget) {
-            amLoop ++;
 
             //cout << "yey" << endl;
 
@@ -334,7 +260,6 @@ int main(){
 
 
             thisTourDist = calcTourDist(towns);
->>>>>>> bbacc3277be753c4eff8f056467bc03e877e8204
             if (thisTourDist < currentBestDist) {
                 bestRoute = towns;
                 currentBestDist = thisTourDist;
@@ -343,8 +268,7 @@ int main(){
             std::random_shuffle(towns.begin(), towns.end());
             timeElapsed = difftime(time(NULL), start);
         }
-        */
-
+        
         for (Town ver : bestRoute) {
             cout << ver.index << endl;
         }
@@ -353,8 +277,7 @@ int main(){
     else {
         cout << 0 << endl;
     }
-    cout << "Elapsed time: " << timeElapsed << endl;
-    cout << "Loops: " << amLoop << endl;
+    //cout << "Elapsed time: " << timeElapsed << endl;
 
     //return 0;
 
