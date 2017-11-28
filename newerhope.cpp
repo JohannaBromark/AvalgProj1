@@ -32,14 +32,23 @@ void greedy(list<Town> &towns){  // fixed for list
     int minDistance;
     int distance; 
 
-    for (auto town = towns.begin(); town != towns.end(); ++town){
-        minDistance = (*town).calcDistance(*next(town, 1));
+    std::list<Town>::iterator it;
+    for (it = towns.begin(); it != towns.end(); ++it){
+        cout << "it: yx" << it->getY() << it->getX() << endl;
+        
+        cout << "next(it): yx" << next(it)->getY() << next(it)->getX() << endl;
+        
 
-        for(auto town2 = towns.begin(); town2 != towns.end(); ++town2){
-            if(town != town2){
-               distance = (*town).calcDistance(*town2);
+
+        minDistance = it->calcDistance(*next(it));
+        cout << "distance" << minDistance << endl;
+        std::list<Town>::iterator it2;
+        for (it2 = towns.begin(); it2 != towns.end(); ++it2){
+            if(it != it2){
+               distance = it->calcDistance(*it2);
                if (distance < minDistance){
-                   std::swap(town, town2);
+                   cout << "swapping!" << endl;
+                    //std::swap(*(next(it)) , it2);
                }
             }
         }
@@ -72,7 +81,9 @@ list<Town> changeTour(list<Town>::iterator city1, list<Town>::iterator city2, li
     list<Town> newList;
 
 
-    tour.splice (tour.begin(), tour, city1, city2);
+    tour.splice(tour.begin(), tour, city1, city2);
+
+    return tour;
 
 
 
@@ -98,7 +109,7 @@ list<Town> changeTour(list<Town>::iterator city1, list<Town>::iterator city2, li
         newList.push_back((*tour)[end]);
     }
     */
-    return newList;
+    //return newList;
 }
 
 
@@ -266,6 +277,8 @@ int main(){
         list<Town>::iterator it1 = towns.begin();
         list<Town>::iterator it2 = towns.begin();
         //advance(it2, 3);
+        cout << "towns size: "<< towns.size() << endl;
+        
         
         towns = changeTour(it1, it2, towns);
         
@@ -293,8 +306,10 @@ int main(){
             //std::random_shuffle(towns.begin(), towns.end());
             timeElapsed = difftime(time(NULL), start);
         }
-        
-        for (Town ver : bestRoute) {
+        //for (Town ver : bestRoute) {
+        cout << "lol" << endl;
+        cout << "towns size: "<< towns.size() << endl;
+        for (Town ver : towns) {
             cout << ver.index << endl;
         }
 
