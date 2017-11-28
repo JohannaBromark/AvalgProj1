@@ -33,22 +33,23 @@ void greedy(list<Town> &towns){  // fixed for list
     int distance; 
 
     std::list<Town>::iterator it;
-    for (it = towns.begin(); it != towns.end(); ++it){
-        cout << "it: yx" << it->getY() << it->getX() << endl;
+    for (it = towns.begin(); it != prev(towns.end()); it++){
+        //cout << "it: yx" << it->getY() << it->getX() << endl;
         
-        cout << "next(it): yx" << next(it)->getY() << next(it)->getX() << endl;
-        
+        //cout << "next(it): yx" << next(it)->getY() << next(it)->getX() << endl;
+        //cout << "it: yx" << it->getY() << it->getX() << endl;
 
 
         minDistance = it->calcDistance(*next(it));
-        cout << "distance" << minDistance << endl;
+        cout << "mindistance" << minDistance << endl;
         std::list<Town>::iterator it2;
         for (it2 = towns.begin(); it2 != towns.end(); ++it2){
             if(it != it2){
                distance = it->calcDistance(*it2);
+               cout << "distance" << distance << endl;
                if (distance < minDistance){
                    cout << "swapping!" << endl;
-                    //std::swap(*(next(it)) , it2);
+                   std::swap(*next(it) , *it2);
                }
             }
         }
@@ -273,6 +274,12 @@ int main(){
     int amLoop = 0; // keep track of loops
 
     if (numTowns > 1) {
+        for (Town ver : towns) {
+            cout << ver.index << endl;
+        }
+
+
+
         greedy(towns);
         list<Town>::iterator it1 = towns.begin();
         list<Town>::iterator it2 = towns.begin();
