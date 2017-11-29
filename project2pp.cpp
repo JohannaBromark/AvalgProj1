@@ -9,8 +9,7 @@
 #include <string>
 //#include <set>
 #include <iterator>
-#include <gmp.h>
-#include <string>
+#include <gmpxx.h>
 
 //Ladda ned bibliotek och kompilera GMP. Kompilera med specinställningar från Christian c++.
 //Öka poängen genom att kolla efter specialfall. p^exp, innan den tar en massa tid.
@@ -120,115 +119,260 @@ int firstPrimesList[] = {
         7727,   7741 ,  7753  , 7757  , 7759   ,7789  , 7793  , 7817  , 7823  , 7829,
         7841,   7853 ,  7867  , 7873  , 7877   ,7879  , 7883  , 7901  , 7907  , 7919
 };
-
-//mpz_probab_prime_p(mpz, int för antalet iterationer) 2- probably 1- prime 0- not prime
-//mpz_gcd(variabel att a resultatet i, forsta , andra)
-
-
-void gFunction(mpz_t& x, const mpz_t& number) {
-    
-    //Computes (x*x)+1 mod number (which factor we seek)
-    
-    
-    mpz_t sum, mult;
-    mpz_inits(sum, mult, NULL);
-    mpz_mul(mult,x,x);
-    mpz_add_ui(sum, mult, 1);
-    mpz_mod(x, sum, number);
-    mpz_clear(sum);
-    mpz_clear(mult);
+mpz_class gcd(mpz_class x, mpz_class y) {
+    //Finds greatest common divisor
+    if (x < y) {
+        return gcd(y, x);
+    }
+    while (y > 0){
+        mpz_class z = x % y;
+        x = y;
+        y = z;
+    }
+    return x;
 }
 
+mpz_class gFunction(mpz_class& x, const mpz_class& number) {
+    return (x * x + 1) % number;
+}
 
-void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
-    
-    //Finds non trivial factor for number. 
-    //factor: the non trivial factor for number
-    //number: the number to find factor for
-    //startValue: the start value for x and y
-    
-    mpz_t x, y, cycle_size, diff; 
-    mpz_inits(x, y, cycle_size, diff, NULL);
-    mpz_set_str(factor, "1", 10);  //10 since it is base 10
-    mpz_set_ui(x, startValue);
-    mpz_set_ui(y, startValue);
-    mpz_set_str(cycle_size, "2", 10);
-    //Loop as long as the factor is 1. i.e. we have not found a non trivial factor. 
-    while (mpz_cmp_ui(factor, 1) == 0) { //mpz_cmp_si returns 0 if they are equal
-        for (int count = 0; mpz_cmp_ui(cycle_size, count)>0 && mpz_cmp_ui(factor, 1) < 1; count++) {
-            //changes x to (x²+1)mod number
-            gFunction(x, number); 
-            mpz_sub(diff, x, y);
-            mpz_gcd(factor, diff , number); //sets factor to gcd of x-y and number
+mpz_class myPow(mpz_class& x, mpz_class& y) {
+    if (y == 0) {
+        return 1;
+    }
+    else if (y == 1) {
+        return x;
+    }
+    y --;
+    return x * myPow(x, y);
+}
+
+mpz_class modPow(mpz_class &base, mpz_class &pow, const mpz_class& mod) {
+    base %= mod;
+    mpz_class result = 1;
+    while (pow > 0) {
+        if (pow & 1) { //if odd
+            result = (result * base) % mod;
         }
-        mpz_mul_ui(cycle_size, cycle_size, 2);
-        mpz_set(y, x);
+        pow >>= 1; //division by two
+        base = (base * base) % mod;
     }
-    if (mpz_cmp(factor, number) == 0) {
-        mpz_set_str(factor, "0", 10);
-    }
-    mpz_clear(x);
-    mpz_clear(y);
-    mpz_clear(cycle_size);
-    mpz_clear(diff);
+    return result;
 }
 
+bool mrInnerLoop(mpz_class &x, int &s, const mpz_class &number) {
+    for (int j = 0; j < s - 1; j++) {
+        x = (x * x) % number;
+        if (x == 1){
+            return false;
+        }
+        if (x == number - 1) {
+            return true;
+        }
+    }
+    return false;
+}
 
-bool findFactors(const mpz_t &number, std::vector<mpz_t>& factors) {
-    //Recursive function for printing all factors of a number
-    mpz_t factor, divNumFact;
-    mpz_inits(factor, divNumFact, NULL);
-
-    //IS the numner prime already?
-    if (mpz_cmp_ui(number, (184467440737095510 - 1)) >0) { 
+bool isProbablyPrime(const mpz_class &number, int certainty) {
+    //Miller-Rabins function for estimating if prime
+    if (number == 2 || number == 3 || number == 5 || number == 7) {
+        return true;
+    }
+    else if (!(number & 1) || number < 2) { //not odd
         return false;
     }
-    
-    else if (mpz_cmp_ui(number, 0) == 0 || mpz_cmp_ui(number, 1) == 0 || mpz_probab_prime_p(number, 10)) {
+    mpz_class d = number - 1;
+    int s = 0;
+    while (! (d & 1)) { //while not odd
+        s += 1;
+        d >>= 1; //division by two
+    }
+    mpz_class x;
+    for (int i = 0; i < certainty; i++) { //WitnessLoop
+        std::mt19937_64 rng(time(0));
+        std::uniform_int_distribution<int> uni(2, number-2);
+        auto randInt = (mpz_class) uni(rng);
+        x = modPow(randInt, d, number);
+        if (x == 1 || x == (number - 1)) {
+            continue;
+        }
+        if (! mrInnerLoop(x, s, number)) {
+            return false;
+        }
+        else {
+            continue;
+        }
+    }
+    return true;
+}
+
+
+//std::set<int> firstPrimes(firstPrimesList);
+
+std::vector<int> aList = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 73, 61, 1662803};
+
+bool isPrime2(const mpz_class number) {
+    if (number == 2 || number == 3 || number == 5 || number == 7) {
+        return true;
+    }
+    else if ((!(number & 1)) || number < 2) { //if number not odd
+        return false;
+    }
+
+    mpz_class d = number - 1;
+    int s = 0;
+    while (! (d & 1)) { //while not odd
+        s += 1;
+        d >>= 1; //division by two
+    }
+    mpz_class limit = std::min(number - 1, (mpz_class) (2 * std::pow(std::log(number), 2)));
+    bool composite;
+    for (mpz_class a = 2; a <= limit; a++) {
+        if (modPow(a, d, number) != 1) {
+            composite = true;
+            for (mpz_class r = 0; r < s; r++) {
+                mpz_class base = 2;
+                mpz_class pow = myPow(base, r) * d;
+                if (modPow(a, pow, number) == number - 1) {
+                    composite = false;
+                    break;
+                }
+            }
+            if (composite) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool isPrime(const mpz_class number) {
+    if (std::find(std::begin(firstPrimesList), std::end(firstPrimesList), number) != std::end(firstPrimesList)) {
+        return true;
+    }
+    else if ((!(number & 1)) || number < 2 || number < 7919) { //if number not odd
+        return false;
+    }
+
+    mpz_class d = number - 1;
+    int s = 0;
+    while (! (d & 1)) { //while not odd
+        s += 1;
+        d >>= 1; //division by two
+    }
+    mpz_class limit = std::min(number - 1, (mpz_class) (2 * std::pow(std::log(number), 2)));
+    bool composite;
+    for (mpz_class a : aList) {
+        if (modPow(a, d, number) != 1) {
+            composite = true;
+            for (mpz_class r = 0; r < s; r++) {
+                mpz_class base = 2;
+                mpz_class pow = myPow(base, r) * d;
+                if (modPow(a, pow, number) == number - 1) {
+                    composite = false;
+                    break;
+                }
+            }
+            if (composite) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+mpz_class pollardsRho(const mpz_class &number, int& startValue) {
+    mpz_class factor = 1, x = startValue, y = startValue, cycle_size = 2;
+    while (factor == 1) {
+        for (int count = 0; count < cycle_size && factor <= 1; count++) {
+            x = gFunction(x, number);
+            //y = gFunction(gFunction(y, number), number);
+            factor = gcd(x - y , number);
+        }
+        cycle_size *= 2;
+        y = x;
+    }
+    if (factor == number) {
+        return 0;
+    }
+    else {
+        return factor;
+    }
+}
+
+bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
+    // Calculates factors and adds to factors list
+    // Returns true if factorization successful, false otherwise.
+    //Removing small prime factors
+    for (int prime : firstPrimesList) {
+        if (number % prime == 0) {
+            number /= prime;
+            factors.push_back((mpz_class) prime);
+        }
+    }
+    if (isProbablyPrime(number, 10)) {
+        factors.push_back(number);
+        return true;
+    }
+    int trialDivisionLimit = 10; // <<--- what should we put this to?
+    //Determine if perfect potens
+    for (int k = 2; k < trialDivisionLimit; k++) {
+        if (std::pow((mpz_class) std::pow(number, 1/k), k) == number) { // <-- rundar denna ned eller upp? Vad är rätt?
+            number = std::pow(number, 1/k);
+            if (isProbablyPrime(number, 10)) { //<--- smart idé på hur man gör om ej prime?
+                for (int i = 0; i < k; i++) {
+                    factors.push_back(number);
+                }
+                return true;
+            }
+        }
+    }
+    int c = 3;
+    int factorLimit = (int) c * std::exp(0.5 * std::sqrt(log(number) * log(log(number))));
+    return false;
+}
+
+
+bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
+    //Recursive function for printing all factors of a number
+
+    if (number > (184467440737095510 - 1)) { //Will get wrong answer if larger than 64 bits, min size for mpz_class 18446744073709551614
+        return false;
+    }
+    else if (number == 0 || number == 1 || isProbablyPrime(number, 10)) {
         factors.push_back(number);
         return true;
     }
 
     int startValue = 2;
-    //factor changes, finds a factor for number
-    pollardsRho(factor, number, startValue); 
+    mpz_class factor = pollardsRho(number, startValue);
     int tryFor = 0;
-    //Whilen måste ändras för factor är väl inte 0 nu
-    while (mpz_cmp_ui(factor, 0) == 0 && tryFor < 10 && mpz_cmp_ui(number, startValue) > 0) {
+    while (factor == 0 && tryFor < 10 && startValue < number) {
         startValue++;
-        pollardsRho(factor, number, startValue);
+        factor = pollardsRho(number, startValue);
         tryFor++;
     }
-
-    if (mpz_cmp_ui(factor, 0) == 0) {
+    if (factor == 0) {
         //std::cout << "fail" << std::endl;
         return false;
     }
-    //Ska det vara 10 eller något annat??
-    //prob_prime returnerar 0 om inte prime, 2 om prime 1 om kanske tror jag
-    else if (mpz_probab_prime_p(factor, 10) > 0) {
+    else if (isProbablyPrime(factor, 10)) {
         factors.push_back(factor);
-        mpz_div(divNumFact, number, factor);
-        return findFactors(divNumFact, factors);
+        return findFactors(number / factor, factors);
         //std::cout << factor << std::endl;
     }
     else {
         findFactors(factor, factors);
-        mpz_div(divNumFact, number, factor);
-        return findFactors(divNumFact, factors);
+        return findFactors(number / factor, factors);
     }
-    mpz_clear(factor);
-    mpz_clear(divNumFact);
 
 }
 
-
 int main() {
     std::string input;
-    mpz_t number, factor;
-    mpz_inits(number, factor, NULL);
-    const char * strToMpz;
-    std::vector<mpz_t> factors;
+    mpz_class number;
+    std::vector<mpz_class> factors;
     std::vector<std::string> inputs;
     //std::cin.tie(NULL);
     /*while (std::cin >> input) {
@@ -236,14 +380,14 @@ int main() {
     }*/
     int i = 0;
     while ( std::cin >> input) {
-
         //std::cin >> input;
         inputs.push_back(input);
         i++;
     }
 
     //std::cin >> input;
-    /*
+    try { number = std::stoull(inputs.at(0)); }
+    catch (std::out_of_range) {number = 184467440737095510;}
 
     if (findFactors(number, factors)) {
         for (mpz_class factor: factors) {
@@ -253,26 +397,38 @@ int main() {
     else {
         std::cout << "fail" << "\n";
     }
-*/
-    for (int i = 0; i < inputs.size(); i++) {
+
+    for (int i = 1; i < inputs.size(); i++) {
+        try { number = std::stoull(inputs.at(i)); }
+        catch (std::out_of_range) {number = 184467440737095510;}
         factors.clear();
+
         std::cout << "\n";
-        strToMpz = inputs[i].c_str();
-        mpz_set_str(number, strToMpz, 10);
-        mpz_out_str(stdout, 10, number);
-        
+
         if (findFactors(number, factors)) {
-            for (int n = 0; n < factors.size(); n++) {
-                mpz_set(factor, factors[n]);
-                mpz_out_str(stdout, 10, factor);
-                std::cout << "\n";
+            for (mpz_class factor: factors) {
+                std::cout << factor << "\n";
             }
         }
         else {
             std::cout << "fail" << "\n";
         }
     }
+
+    /*while (std::cin >> input) {
+        try { number = std::stoull(input); }
+        catch (std::out_of_range) {number = 429496729500;}
+        factors.clear();
+
+        if (findFactors(number, factors)) {
+            for (mpz_class factor: factors) {
+                std::cout << factor << "\n";
+            }
+        }
+        else {
+            std::cout << "fail" << "\n";
+        }
+        std::cout << "\n";
+    }*/
     return 0;
 }
-
-//Compile with -lgmp -lgmpxx
