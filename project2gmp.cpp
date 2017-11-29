@@ -416,7 +416,7 @@ bool findFactors(const mpz_t &number, std::vector<mpz_t>& factors) {
 int main() {
     std::string input;
     mpz_t number;
-    std::vector<mpz_class> factors;
+    std::vector<mpz_t> factors;
     std::vector<std::string> inputs;
     //std::cin.tie(NULL);
     /*while (std::cin >> input) {
