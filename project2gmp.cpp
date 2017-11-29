@@ -310,18 +310,18 @@ void pollardsRho(mpz_t &factor, const mpz_t &number, int& startValue) {
     mpz_t x, y, cycle_size, diff; 
     mpz_inits(x, y, cycle_size, diff, NULL);
     mpz_set_str(factor, "1", 10);  //10 since it is base 10
-    mpz_set_si(x, startValue);
-    mpz_set_si(y, startValue);
+    mpz_set_ui(x, startValue);
+    mpz_set_ui(y, startValue);
     mpz_set_str(cycle_size, "2", 10);
     //Loop as long as the factor is 1. i.e. we have not found a non trivial factor. 
-    while (mpz_cmp_si(factor, 1) == 0) { //mpz_cmp_si returns 0 if they are equal
-        for (int count = 0; mpz_cmp_si(cycle_size, count)>0 && mpz_cmp_si(factor, 1) < 1; count++) {
+    while (mpz_cmp_ui(factor, 1) == 0) { //mpz_cmp_si returns 0 if they are equal
+        for (int count = 0; mpz_cmp_ui(cycle_size, count)>0 && mpz_cmp_ui(factor, 1) < 1; count++) {
             //changes x to (x²+1)mod number
             gFunction(x, number); 
             mpz_sub(diff, x, y);
             mpz_gcd(factor, diff , number); //sets factor to gcd of x-y and number
         }
-        mpz_mul_si(cycle_size, cycle_size, 2);
+        mpz_mul_ui(cycle_size, cycle_size, 2);
         mpz_set(y, x);
     }
     if (mpz_cmp(factor, number) == 0) {
@@ -369,14 +369,14 @@ bool quadraticSieve(mpz_class &number, std::vector<mpz_class>& factors) {
 
 bool findFactors(const mpz_t &number, std::vector<mpz_t>& factors) {
     //Recursive function for printing all factors of a number
-    mpz_t factor;
-    mpz_init(factor);
+    mpz_t factor, divNumFact;
+    mpz_inits(factor, divNumFact);
 
-    //Behövs dessa rader nu när vi har störra siffror?
-    if (number > (184467440737095510 - 1)) { 
+    //IS the numner prime already?
+    if (mpz_cmp_ui(number, (184467440737095510 - 1)) >0) { 
         return false;
     }
-    else if (mpz_cmp_si(number, 0) == 0 || mpz_cmp_si(number, 1) == 0 || isProbablyPrime(number, 10)) {
+    else if (mpz_cmp_ui(number, 0) == 0 || mpz_cmp_ui(number, 1) == 0 || mpz_probab_prime_p(number, 10)) {
         factors.push_back(number);
         return true;
     }
@@ -386,33 +386,36 @@ bool findFactors(const mpz_t &number, std::vector<mpz_t>& factors) {
     pollardsRho(factor, number, startValue); 
     int tryFor = 0;
     //Whilen måste ändras för factor är väl inte 0 nu
-    while (mpz_cmp_si(factor, 0) == 0 && tryFor < 10 && mpz_cmp_si(number, startValue) > 0) {
+    while (mpz_cmp_ui(factor, 0) == 0 && tryFor < 10 && mpz_cmp_ui(number, startValue) > 0) {
         startValue++;
         pollardsRho(factor, number, startValue);
         tryFor++;
     }
 
-    if (mpz_cmp_si(factor, 0) == 0) {
+    if (mpz_cmp_ui(factor, 0) == 0) {
         //std::cout << "fail" << std::endl;
         return false;
     }
     //Ska det vara 10 eller något annat??
     //prob_prime returnerar 0 om inte prime, 2 om prime 1 om kanske tror jag
-    else if (mpz_probab_prime_p(number, 10) > 0) {
+    else if (mpz_probab_prime_p(factor, 10) > 0) {
         factors.push_back(factor);
-        return findFactors(number / factor, factors);
+        mpz_div(divNumFact, number, factor);
+        return findFactors(divNumFact, factors);
         //std::cout << factor << std::endl;
     }
     else {
         findFactors(factor, factors);
-        return findFactors(number / factor, factors);
+        mpz_div(divNumFact, number, factor);
+        return findFactors(divNumFact, factors);
     }
-
+    mpz_clear(factor);
+    mpz_clear(divNumFact);
 }
 
 int main() {
-    mpz_class input;
-    mpz_class number;
+    std::string input;
+    mpz_t number;
     std::vector<mpz_class> factors;
     std::vector<std::string> inputs;
     //std::cin.tie(NULL);
