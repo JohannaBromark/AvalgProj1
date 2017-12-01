@@ -54,7 +54,7 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
     mpz_class numberLimit;
     numberLimit = "18446744073709551000000000";
 
-    if (number > numberLimit) { //Will get wrong answer if larger than 64 bits, min size for mpz_class 18446744073709551614
+    if (number > numberLimit) { //Sets a limit to pass the time limit
         return false;
     }
     else if (number == 0 || number == 1 || mpz_probab_prime_p(number.get_mpz_t(), 1000) > 0) {
