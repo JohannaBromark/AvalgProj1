@@ -43,8 +43,8 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
     //Recursive function for printing all factors of a number
 
     mpz_class numberLimit;
-    numberLimit = "18446744073709551000000000";
-
+    numberLimit = "99446744073709551000000000";
+    
     if (number > numberLimit) { //Sets a limit to pass the time limit
         return false;
     }
