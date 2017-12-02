@@ -1,19 +1,10 @@
-//
-// Created by Isabelle Hallman on 2017-11-22.
-//
-
 #include <iostream>
 #include <random>
 #include <cmath>
 #include <algorithm>
 #include <string>
-//#include <set>
 #include <iterator>
 #include <gmpxx.h>
-
-//Ladda ned bibliotek och kompilera GMP. Kompilera med specinställningar från Christian c++.
-//Öka poängen genom att kolla efter specialfall. p^exp, innan den tar en massa tid.
-//Använd pekare även för ints så ska det gå snabbare
 
 mpz_class gFunction(mpz_class& x, const mpz_class& number) {
     //Computes (x*x)+1 mod number (which factor we seek)
