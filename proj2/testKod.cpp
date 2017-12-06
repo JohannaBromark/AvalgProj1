@@ -4,7 +4,10 @@
 #include <algorithm>
 #include <string>
 #include <iterator>
+#include <chrono>
 #include <gmpxx.h>
+
+using namespace std;
 
 mpz_class gFunction(mpz_class& x, const mpz_class& number) {
     //Computes (x*x)+1 mod number (which factor we seek)
@@ -43,8 +46,8 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
     //Recursive function for printing all factors of a number
 
     mpz_class numberLimit;
-    numberLimit = "99446744073709551000000000";
-    
+    //numberLimit = "99446744073709551000000000";
+    numberLimit = "10000000000000000000000000000000";
     
     if (number > numberLimit) { //Sets a limit to pass the time limit
         return false;
@@ -78,6 +81,10 @@ bool findFactors(const mpz_class &number, std::vector<mpz_class>& factors) {
 }
 
 int main() {
+    //Timekeeping
+    //duration<double> totTime;
+   
+
     std::string input;
     mpz_class number;
     std::vector<mpz_class> factors;
@@ -86,20 +93,34 @@ int main() {
     while ( std::cin >> input) {
         inputs.push_back(input);
     }
+    /*
+    time_t start = time(NULL);
+    time_t end;*/
+    auto startTime = chrono::high_resolution_clock::now();
     for (int i = 0; i < inputs.size(); i++) {
         factors.clear();
         number = inputs[i];
         
         if (findFactors(number, factors)) {
+            //end = difftime(time(NULL), start);
+            auto endTime = chrono::high_resolution_clock::now();
             for (mpz_class factor: factors) {
                 std::cout << factor << "\n";
             }
+            cout << "Tid: "<<chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
+            //totTime = duration_cast<duration<double>>(endTime - startTime);
         }
         else {
+            //end = difftime(time(NULL), start);
+            auto endTime = std::chrono::high_resolution_clock::now();
             std::cout << "fail" << "\n";
+            //totTime = duration_cast<duration<double>>(endTime - startTime);
+            cout << "Tid: "<< chrono::duration_cast<chrono::microseconds>(endTime - startTime).count();
         }
         std::cout << "\n";
-    }     
+    }
+     
+     //std::cout << totTime.count() << std::endl;
 
     return 0;
 }
